@@ -1,0 +1,16 @@
+name: i_jmu
+description: i-JMU（i集大）
+homepage: 'https://github.com/openjmu/i-jmu'
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.13.0 <3.0.0'
+  flutter: '>=2.2.3'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
