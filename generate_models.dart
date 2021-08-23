@@ -62,8 +62,6 @@ void makeModel(
   String modelContent = 'part of \'${generateFilePath.split('/').last}\';\n\n';
   modelContent += 'final Map<Type, DataFactory> $factoriesName = '
       '<Type, DataFactory>{\n';
-  modelContent += '  EmptyDataModel: (Map<String, dynamic> json) => '
-      'EmptyDataModel.fromJson(json),\n';
   for (int i = 0; i < lines.length; i++) {
     final String line = lines[i];
     if (line.contains(_constKey) && line.contains(_prefixKey)) {

@@ -2,10 +2,11 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 11/26/20 4:33 PM
 ///
-import 'dart:convert';
 import 'dart:core';
 
 import 'package:flutter/foundation.dart';
+import 'package:i_jmu/constants/constants.dart'
+    show GlobalJsonEncoder, currentTimeStamp;
 
 import 'data_model.dart';
 
@@ -13,7 +14,8 @@ import 'data_model.dart';
 class ResponseModel<T extends DataModel> {
   const ResponseModel({
     required this.code,
-    required this.msg,
+    required this.message,
+    required this.timestamp,
     this.rawData,
     this.data,
     this.pageNum,
@@ -28,9 +30,10 @@ class ResponseModel<T extends DataModel> {
   }) {
     return ResponseModel<T>(
       code: json['code'] as int? ?? 0,
-      msg: json['msg'] as String? ??
+      message: json['message'] as String? ??
           json['detail'] as String? ??
-          '_ExternalError (0)',
+          '_Succeed (0)',
+      timestamp: json['timestamp'] as int? ?? currentTimeStamp,
       data: !isModels && json['data'] != null
           ? makeModel<T>(json['data'] as Map<String, dynamic>)
           : null,
@@ -53,7 +56,8 @@ class ResponseModel<T extends DataModel> {
   }) {
     return ResponseModel<T>(
       code: model.code,
-      msg: model.msg,
+      message: model.message,
+      timestamp: model.timestamp,
       data: model.data as T?,
       rawData: model.rawData,
       pageNum: model.pageNum,
@@ -64,7 +68,8 @@ class ResponseModel<T extends DataModel> {
   }
 
   final int code;
-  final String msg;
+  final String message;
+  final int timestamp;
   final T? data;
 
   /// This is the raw data for the model.
@@ -76,16 +81,17 @@ class ResponseModel<T extends DataModel> {
   final int? total;
   final List<T>? models;
 
-  bool get isSucceed => code == 1;
+  bool get isSucceed => code == 0;
 
-  bool get isRequestError => msg.contains('_InternalRequestError') == true;
+  bool get isRequestError => message.contains('_InternalRequestError') == true;
 
   bool get canRequestMore => (pageNum! * pageSize!) < total!;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'code': code,
-      'msg': msg,
+      'message': message,
+      'timestamp': timestamp,
       if (data != null) 'data': data!.toJson(),
       if (pageNum != null) 'page_num': pageNum,
       if (pageSize != null) 'page_size': pageSize,
@@ -96,5 +102,5 @@ class ResponseModel<T extends DataModel> {
   }
 
   @override
-  String toString() => const JsonEncoder.withIndent('  ').convert(toJson());
+  String toString() => GlobalJsonEncoder.convert(toJson());
 }

@@ -5,18 +5,23 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:device_info/device_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../apis/api.dart';
+import '../constants/constants.dart';
 import '../extensions/object_extension.dart';
 import '../models/data_model.dart';
 import '../models/response_model.dart';
 
+import 'device_util.dart';
 import 'log_util.dart';
 import 'other_utils.dart';
+import 'package_util.dart';
 import 'toast_util.dart';
 
 enum FetchType { head, get, post, put, patch, delete }
@@ -26,18 +31,22 @@ class HttpUtil {
 
   static final Dio dio = Dio()
     ..options = BaseOptions(
-      connectTimeout: kReleaseMode ? 10000 : null,
+      connectTimeout: kReleaseMode ? 15000 : null,
       sendTimeout: kReleaseMode ? 30000 : null,
-      receiveTimeout: kReleaseMode ? 10000 : null,
+      receiveTimeout: kReleaseMode ? 15000 : null,
       receiveDataWhenStatusError: true,
     )
     ..interceptors.add(_interceptor);
 
   static ResponseModel<T> _successModel<T extends DataModel>() =>
-      ResponseModel<T>(code: 1, msg: '');
+      ResponseModel<T>(code: 1, message: '', timestamp: currentTimeStamp);
 
   static ResponseModel<T> _failModel<T extends DataModel>(String message) =>
-      ResponseModel<T>(code: 0, msg: '_InternalRequestError: $message');
+      ResponseModel<T>(
+        code: 0,
+        message: '_InternalRequestError: $message',
+        timestamp: currentTimeStamp,
+      );
 
   static Future<T> fetch<T>(
     FetchType fetchType, {
@@ -80,7 +89,7 @@ class HttpUtil {
       final ResponseModel<T> model = ResponseModel<T>.fromJson(resBody!);
       LogUtil.d('Response model: $model');
       if (!model.isSucceed) {
-        LogUtil.d('Response is not succeed: ${model.msg}');
+        LogUtil.d('Response is not succeed: ${model.message}');
       }
       return model;
     } else {
@@ -113,7 +122,7 @@ class HttpUtil {
       );
       LogUtil.d('Response model: $model');
       if (!model.isSucceed) {
-        LogUtil.d('Response is not succeed: ${model.msg}');
+        LogUtil.d('Response is not succeed: ${model.message}');
       }
       return model;
     } else {
@@ -239,6 +248,20 @@ class HttpUtil {
   }) async {
     final Response<T> response;
     headers ??= <String, String?>{};
+    if (UserAPI.token != null) {
+      headers['X-Id-Token'] = UserAPI.token;
+    }
+    String? _userAgent;
+    if (Platform.isAndroid) {
+      _userAgent = (DeviceUtil.deviceInfo as AndroidDeviceInfo).forUserAgent;
+    } else if (Platform.isIOS) {
+      _userAgent = (DeviceUtil.deviceInfo as IosDeviceInfo).forUserAgent;
+    }
+    headers['X-Device-Info'] = _userAgent;
+    headers['X-Terminal-Info'] =
+        Platform.isAndroid || Platform.isIOS ? 'mobile' : 'desktop';
+    headers['user-agent'] = '$_userAgent '
+        '(${PackageUtil.packageInfo.packageName})';
 
     // Recreate <String, String> headers and queryParameters.
     final Map<String, dynamic> _headers = headers.map<String, dynamic>(
@@ -257,6 +280,9 @@ class HttpUtil {
       queryParameters: _queryParameters,
     );
     LogUtil.d('$fetchType url: ${dio.options.baseUrl}$replacedUri');
+    if (_queryParameters != null) {
+      LogUtil.d('Fetch with queries: $_queryParameters');
+    }
     if (body != null) {
       LogUtil.d('Raw request body: $body');
     }
@@ -335,7 +361,7 @@ class HttpUtil {
     }
     LogUtil.d(
       'Got response from: ${dio.options.baseUrl}$replacedUri '
-          '${response.statusCode}',
+      '${response.statusCode}',
     );
     LogUtil.d('Raw response body: ${response.data}');
     return response;
@@ -396,7 +422,7 @@ class HttpUtil {
         }
         LogUtil.e(
           'Error when requesting: $e\n'
-              'Raw response data: ${e.response?.data}',
+          'Raw response data: ${e.response?.data}',
         );
         e.response ??= Response<Map<String, dynamic>>(
           requestOptions: e.requestOptions,
