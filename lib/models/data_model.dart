@@ -13,6 +13,8 @@ part 'data_model.d.dart';
 
 part 'data_model.g.dart';
 
+part 'system_config_model.dart';
+
 part 'token_model.dart';
 
 abstract class DataModel extends Equatable {

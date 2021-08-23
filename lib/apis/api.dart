@@ -4,6 +4,8 @@
 ///
 import 'package:i_jmu/constants/exports.dart';
 
+part 'portal_api.dart';
+
 part 'user_api.dart';
 
 class API {
