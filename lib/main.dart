@@ -3,12 +3,10 @@ import 'constants/exports.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  await Boxes.openBoxes();
   await Future.wait(
     <Future<void>>[
-      (() async {
-        await Hive.initFlutter();
-        await Boxes.openBoxes();
-      })(),
       DeviceUtil.initDeviceInfo(),
       PackageUtil.initInfo(),
     ],

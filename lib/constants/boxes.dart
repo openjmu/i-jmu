@@ -32,4 +32,5 @@ class BoxFields {
   const BoxFields._();
 
   static const String nToken = 'token';
+  static const String nUUID = 'uuid';
 }

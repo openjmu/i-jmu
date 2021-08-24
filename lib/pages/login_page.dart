@@ -49,16 +49,14 @@ class _LoginPageState extends State<LoginPage> {
               'You\'ve ${UserAPI.isLogon ? '' : 'not '}logon.',
               style: Theme.of(context).textTheme.headline4,
             ),
-            if (!UserAPI.isLogon)
-              TextField(
-                controller: _uTec,
-                decoration: const InputDecoration(hintText: 'username'),
-              ),
-            if (!UserAPI.isLogon)
-              TextField(
-                controller: _pTec,
-                decoration: const InputDecoration(hintText: 'password'),
-              ),
+            TextField(
+              controller: _uTec,
+              decoration: const InputDecoration(hintText: 'username'),
+            ),
+            TextField(
+              controller: _pTec,
+              decoration: const InputDecoration(hintText: 'password'),
+            ),
             const Text('Click the FAB to make the login request.'),
             Text(
               '$response',

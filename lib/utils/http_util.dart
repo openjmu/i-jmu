@@ -281,7 +281,9 @@ class HttpUtil {
     );
     LogUtil.d('$fetchType url: ${dio.options.baseUrl}$replacedUri');
     if (_queryParameters != null) {
-      LogUtil.d('Fetch with queries: $_queryParameters');
+      LogUtil.d(
+        'Fetch with queries: ${GlobalJsonEncoder.convert(_queryParameters)}',
+      );
     }
     if (body != null) {
       LogUtil.d('Raw request body: $body');

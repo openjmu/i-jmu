@@ -8,8 +8,10 @@ import 'package:flutter/services.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 import 'package:device_info/device_info.dart';
+import 'package:i_jmu/constants/boxes.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:uuid/uuid.dart';
 
 import '../extensions/object_extension.dart';
 import 'log_util.dart';
@@ -21,31 +23,40 @@ class DeviceUtil {
   static final DeviceInfoPlugin _deviceInfoPlugin = DeviceInfoPlugin();
   static dynamic deviceInfo;
 
-  static String deviceModel = 'Express Device';
+  static late final String deviceModel;
+  static late final String deviceUuid;
   static String? devicePushToken;
-  static String? deviceUuid;
 
   static Future<void> initDeviceInfo() async {
     await getModel();
+    getUuid();
   }
 
   static Future<void> getModel() async {
     if (Platform.isAndroid) {
       deviceInfo = await _deviceInfoPlugin.androidInfo;
       final AndroidDeviceInfo androidInfo = deviceInfo as AndroidDeviceInfo;
-
-      final String model = '${androidInfo.brand} ${androidInfo.product}';
-      deviceModel = model;
+      deviceModel = '${androidInfo.brand} ${androidInfo.product}';
     } else if (Platform.isIOS) {
       deviceInfo = await _deviceInfoPlugin.iosInfo;
       final IosDeviceInfo iosInfo = deviceInfo as IosDeviceInfo;
-
-      final String model =
+      deviceModel =
           '${iosInfo.model} ${iosInfo.utsname.machine} ${iosInfo.systemVersion}';
-      deviceModel = model;
+    } else {
+      deviceModel = 'iJMU Device (${Platform.operatingSystem})';
     }
-
     LogUtil.d('deviceModel: $deviceModel');
+  }
+
+  static void getUuid() {
+    final String? _prevUuid = Boxes.settingsBox.get(BoxFields.nUUID) as String?;
+    if (_prevUuid == null) {
+      final String newUuid = const Uuid().v5(Uuid.NAMESPACE_OID, deviceModel);
+      Boxes.settingsBox.put(BoxFields.nUUID, newUuid);
+      deviceUuid = newUuid;
+    } else {
+      deviceUuid = _prevUuid;
+    }
   }
 
   static AndroidIntent _dialIntent(String url) {

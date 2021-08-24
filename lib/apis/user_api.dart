@@ -8,6 +8,7 @@ class UserAPI {
   const UserAPI._();
 
   static bool get isLogon => _token != null;
+
   static String? get token => _token;
   static String? _token;
 
