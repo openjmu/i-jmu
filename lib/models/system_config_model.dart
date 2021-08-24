@@ -5,8 +5,8 @@
 part of 'data_model.dart';
 
 @JsonSerializable()
-class SystemConfigModel extends DataModel {
-  const SystemConfigModel({
+class SystemConfig extends DataModel {
+  const SystemConfig({
     required this.protocol,
     required this.schoolName,
     this.favIcon,
@@ -21,8 +21,8 @@ class SystemConfigModel extends DataModel {
     required this.eCardSets,
   });
 
-  factory SystemConfigModel.fromJson(Map<String, dynamic> json) =>
-      _$SystemConfigModelFromJson(json);
+  factory SystemConfig.fromJson(Map<String, dynamic> json) =>
+      _$SystemConfigFromJson(json);
 
   @JsonKey(defaultValue: '')
   final String protocol;
@@ -62,7 +62,7 @@ class SystemConfigModel extends DataModel {
       ];
 
   @override
-  Map<String, dynamic> toJson() => _$SystemConfigModelToJson(this);
+  Map<String, dynamic> toJson() => _$SystemConfigToJson(this);
 }
 
 @JsonSerializable()
@@ -71,9 +71,9 @@ class SystemConfigECard extends DataModel {
     required this.imageUrl,
     required this.name,
     required this.isScan,
-    required this.requestUrl,
     required this.html,
     required this.smallImage,
+    this.requestUrl,
   });
 
   factory SystemConfigECard.fromJson(Map<String, dynamic> json) =>
@@ -83,11 +83,18 @@ class SystemConfigECard extends DataModel {
   final String name;
   @JsonKey(name: 'scan', defaultValue: false)
   final bool isScan;
-  @JsonKey(name: 'reqUrl', defaultValue: '')
-  final String requestUrl;
   @JsonKey(defaultValue: true)
   final bool html;
   final String smallImage;
+  @JsonKey(name: 'reqUrl', defaultValue: null)
+  final String? requestUrl;
+
+  String? get composedUrl {
+    if (requestUrl == null) {
+      return null;
+    }
+    return requestUrl!.replaceAll('{idToken}', UserAPI.token!);
+  }
 
   @override
   List<Object?> get props =>

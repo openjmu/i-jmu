@@ -6,8 +6,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
-import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart' as web_view;
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -37,6 +38,8 @@ class HttpUtil {
       receiveDataWhenStatusError: true,
     )
     ..interceptors.add(_interceptor);
+  static final web_view.CookieManager webViewCookieManager =
+      web_view.CookieManager.instance();
 
   static ResponseModel<T> _successModel<T extends DataModel>() =>
       ResponseModel<T>(code: 1, message: '', timestamp: currentTimeStamp);

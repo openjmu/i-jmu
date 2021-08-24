@@ -30,9 +30,13 @@ class _LoginPageState extends State<LoginPage> {
       _uTec.text,
       _pTec.text,
     );
+    response = res.data?.toString();
     if (res.isSucceed) {
-      response = res.data?.toString();
       UserAPI.token = res.data!.idToken;
+      navigator.pushNamedAndRemoveUntil(
+        Routes.jmuMainPage.name,
+        (Route<dynamic> r) => false,
+      );
     }
     setState(() {});
   }

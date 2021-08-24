@@ -4,9 +4,9 @@
 ///
 import 'package:flutter/material.dart';
 
-NavigatorState get navigatorState => Instances.navigatorKey.currentState!;
+NavigatorState get navigator => Instances.navigatorKey.currentState!;
 
-BuildContext get overlayContext => navigatorState.overlay!.context;
+BuildContext get overlayContext => navigator.overlay!.context;
 
 class Instances {
   const Instances._();

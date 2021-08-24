@@ -8,6 +8,8 @@ import 'package:ff_annotation_route_library/ff_annotation_route_library.dart';
 import 'package:flutter/widgets.dart';
 import 'pages/login_page.dart';
 import 'pages/main_page.dart';
+import 'pages/splash_page.dart';
+import 'widgets/in_app_webview.dart';
 
 // ignore_for_file: prefer_const_literals_to_create_immutables,unused_local_variable,unused_import
 FFRouteSettings getRouteSettings({
@@ -34,6 +36,32 @@ FFRouteSettings getRouteSettings({
           key: asT<Key?>(safeArguments['key']),
         ),
         routeName: '首页',
+      );
+    case 'jmu://splash-page':
+      return FFRouteSettings(
+        name: name,
+        arguments: arguments,
+        widget: SplashPage(
+          key: asT<Key?>(safeArguments['key']),
+        ),
+        routeName: '闪屏页',
+      );
+    case 'jmu://web-view':
+      return FFRouteSettings(
+        name: name,
+        arguments: arguments,
+        widget: InAppWebViewPage(
+          key: asT<Key?>(safeArguments['key']),
+          url: asT<String>(safeArguments['url'])!,
+          title: asT<String?>(safeArguments['title'], '网页链接'),
+          withCookie: asT<bool>(safeArguments['withCookie'], true)!,
+          withAction: asT<bool>(safeArguments['withAction'], true)!,
+          withNavigationControls:
+              asT<bool>(safeArguments['withNavigationControls'], true)!,
+          withScaffold: asT<bool>(safeArguments['withScaffold'], true)!,
+          keepAlive: asT<bool>(safeArguments['keepAlive'], false)!,
+        ),
+        routeName: '网页浏览',
       );
     default:
       return const FFRouteSettings(name: '404', routeName: '404_page');

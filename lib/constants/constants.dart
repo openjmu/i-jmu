@@ -7,6 +7,9 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+/// 弹窗的最大宽度
+const double kDialogMaxWidth = 320;
+
 const JsonEncoder GlobalJsonEncoder = JsonEncoder.withIndent('  ');
 
 DateTime get currentTime => DateTime.now();

@@ -23,4 +23,10 @@ class API {
 
   static const String appSystemConfigurations =
       '$portalServiceHost/v1/config/system/getAppSystemConf';
+  static const String bannerConfig = '$portalServiceHost/v1/cms/marquee/get';
+
+  /// Service APIs.
+  static const String services = '$portalServiceHost/v1/service';
+  static const String servicesForceRecommended =
+      '$services/findForceRecommService';
 }

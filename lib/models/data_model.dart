@@ -5,13 +5,20 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../apis/api.dart';
 import '../constants/constants.dart';
 import '../extensions/object_extension.dart';
 import '../utils/log_util.dart';
 
+part 'banner_config_model.dart';
+
 part 'data_model.d.dart';
 
 part 'data_model.g.dart';
+
+part 'service_model.dart';
+
+part 'static_handler.dart';
 
 part 'system_config_model.dart';
 

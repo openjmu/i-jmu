@@ -29,10 +29,10 @@ class IJMUApp extends StatelessWidget {
         settings: settings,
         getRouteSettings: getRouteSettings,
       ),
-      initialRoute: Routes.jmuMainPage.name,
+      initialRoute: Routes.jmuSplashPage.name,
       builder: (BuildContext c, Widget? w) => RepaintBoundary(
         key: Instances.appRepaintBoundaryKey,
-        child: w,
+        child: DoubleBackExitWrapper(child: w!),
       ),
     );
   }

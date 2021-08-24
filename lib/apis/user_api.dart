@@ -19,10 +19,22 @@ class UserAPI {
       return;
     }
     Boxes.settingsBox.put(BoxFields.nToken, value);
+    HttpUtil.webViewCookieManager.setCookie(
+      url: Uri(scheme: 'https', host: 'jmu.edu.cn'),
+      name: 'userToken',
+      value: value,
+    );
   }
 
   static void recoverToken() {
     _token = Boxes.settingsBox.get(BoxFields.nToken) as String?;
+    if (_token != null) {
+      HttpUtil.webViewCookieManager.setCookie(
+        url: Uri(scheme: 'https', host: 'jmu.edu.cn'),
+        name: 'userToken',
+        value: _token!,
+      );
+    }
   }
 
   static Future<ResponseModel<TokenModel>> login(String u, String p) {
