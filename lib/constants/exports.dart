@@ -5,6 +5,8 @@
 export 'package:hive/hive.dart';
 export 'package:hive_flutter/hive_flutter.dart';
 export 'package:ff_annotation_route_library/ff_annotation_route_library.dart';
+export 'package:permission_handler/permission_handler.dart'
+    show Permission, PermissionStatus;
 
 export 'package:i_jmu/i_jmu_route.dart';
 export 'package:i_jmu/i_jmu_routes.dart';

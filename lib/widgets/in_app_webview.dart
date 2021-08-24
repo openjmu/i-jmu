@@ -5,22 +5,24 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:android_scheme_search/android_scheme_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart' show Response;
+import 'package:android_scheme_search/android_scheme_search.dart';
 import 'package:ff_annotation_route_library/ff_annotation_route_library.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:i_jmu/apis/api.dart';
-import 'package:i_jmu/constants/constants.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../apis/api.dart';
+import '../constants/constants.dart';
 import '../constants/screens.dart';
 import '../constants/styles.dart';
 import '../extensions/build_context_extension.dart';
 import '../extensions/state_extension.dart';
 import '../utils/http_util.dart';
 import '../utils/log_util.dart';
+import '../utils/other_utils.dart';
 import '../utils/package_util.dart';
 import '../utils/toast_util.dart';
 import 'dialogs/base_dialog.dart';
@@ -504,6 +506,14 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
       onUpdateVisitedHistory: (_, Uri? url, bool? androidIsReload) {
         LogUtil.d('WebView onUpdateVisitedHistory: $url, $androidIsReload');
         cancelProgress();
+      },
+      androidOnGeolocationPermissionsShowPrompt:
+          (InAppWebViewController controller, String origin) async {
+        return GeolocationPermissionShowPromptResponse(
+          allow: await checkPermissions(<Permission>[Permission.location]),
+          origin: origin,
+          retain: true,
+        );
       },
     );
   }
