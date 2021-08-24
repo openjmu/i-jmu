@@ -30,15 +30,19 @@ class _LoginPageState extends State<LoginPage> {
       _uTec.text,
       _pTec.text,
     );
-    response = res.data?.toString();
     if (res.isSucceed) {
       UserAPI.token = res.data!.idToken;
       navigator.pushNamedAndRemoveUntil(
         Routes.jmuMainPage.name,
         (Route<dynamic> r) => false,
       );
+      return;
     }
-    setState(() {});
+    if (mounted) {
+      setState(() {
+        response = res.data?.toString();
+      });
+    }
   }
 
   @override
@@ -50,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'You\'ve ${UserAPI.isLogon ? '' : 'not '}logon.',
+              UserAPI.isLogon ? 'You\'ve logon.' : 'You\'re not logon.',
               style: Theme.of(context).textTheme.headline4,
             ),
             TextField(
@@ -62,10 +66,6 @@ class _LoginPageState extends State<LoginPage> {
               decoration: const InputDecoration(hintText: 'password'),
             ),
             const Text('Click the FAB to make the login request.'),
-            Text(
-              '$response',
-              style: Theme.of(context).textTheme.bodyText2,
-            ),
           ],
         ),
       ),

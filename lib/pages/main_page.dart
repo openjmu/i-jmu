@@ -15,16 +15,50 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  Widget _searchBar(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(kToolbarHeight / 4),
+      height: kToolbarHeight,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                borderRadius: RadiusConstants.max,
+                color: context.surfaceColor.withOpacity(.3),
+              ),
+              child: Row(
+                children: const <Widget>[
+                  Icon(Icons.search, color: Colors.white, size: 18),
+                  Text(
+                    '大家都在搜：iJMU',
+                    style: TextStyle(color: Colors.white, height: 1.25),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: defaultLightColor,
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverToBoxAdapter(child: _QuickActionsPanel()),
-          SliverToBoxAdapter(child: _BannerPanel()),
-          _RecommendedServicesPanel(),
-        ],
+      body: SafeArea(
+        bottom: false,
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverToBoxAdapter(child: _searchBar(context)),
+            const SliverToBoxAdapter(child: _QuickActionsPanel()),
+            const SliverToBoxAdapter(child: _BannerPanel()),
+            const _RecommendedServicesPanel(),
+          ],
+        ),
       ),
     );
   }
@@ -60,7 +94,7 @@ class _QuickActionsPanelState extends State<_QuickActionsPanel> {
       return const PlatformProgressIndicator();
     }
     return SizedBox(
-      height: 80,
+      height: 72,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: List<Widget>.generate(
