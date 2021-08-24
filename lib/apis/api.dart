@@ -2,6 +2,9 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2021/8/23 14:09
 ///
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:i_jmu/constants/exports.dart';
 
 part 'portal_api.dart';

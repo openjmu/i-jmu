@@ -30,8 +30,8 @@ class UserAPI {
       url: API.login,
       queryParameters: <String, String>{
         'appId': 'com.openjmu.iJMU',
-        // 'clientId': 'eda0f8479cdcd48ad60c3405915e6c75',
-        'deviceId': 'WkkJ+qqKKWMDAHn4sSFxRjok',
+        'clientId': md5.convert(utf8.encode(DeviceUtil.deviceUuid)).toString(),
+        'deviceId': base64.encode(utf8.encode(DeviceUtil.deviceModel)),
         'username': u,
         'password': p,
       },
