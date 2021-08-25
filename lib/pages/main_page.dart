@@ -6,6 +6,82 @@
 import 'package:flutter/material.dart';
 import 'package:i_jmu/constants/exports.dart';
 
+class MainPageNotifier extends ChangeNotifier {
+  MainPageNotifier() {
+    request();
+  }
+
+  bool _isLoading = false, _hasError = false;
+
+  SystemConfig? _systemConfig;
+  BannerConfig? _bannerConfig;
+  List<ServiceModel>? _services;
+
+  bool get isEmpty =>
+      _systemConfig == null && _bannerConfig == null && _services == null;
+
+  int get currentBanner => _currentBanner;
+  int _currentBanner = 0;
+
+  set currentBanner(int value) {
+    if (value == _currentBanner) {
+      return;
+    }
+    _currentBanner = value;
+    notifyListeners();
+  }
+
+  Color get swatchColor {
+    if (_bannerConfig == null) {
+      return defaultLightColor;
+    }
+    return Color(
+      int.parse(
+        _bannerConfig!.marqueePics[_currentBanner].color
+            .replaceAll('#', '0xff'),
+      ),
+    );
+  }
+
+  Future<void> request() async {
+    _isLoading = true;
+    _hasError = false;
+    notifyListeners();
+    try {
+      await Future.wait(
+        <Future<void>>[
+          _fetchSystemConfig(),
+          _fetchBannerConfig(),
+          _fetchRecommendedServices(),
+        ],
+        eagerError: true,
+      );
+    } catch (e) {
+      _hasError = true;
+      showToast(e.errorMessage);
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> _fetchSystemConfig() async {
+    final ResponseModel<SystemConfig> res = await PortalAPI.systemConfig();
+    _systemConfig = res.data;
+  }
+
+  Future<void> _fetchBannerConfig() async {
+    final ResponseModel<BannerConfig> res = await PortalAPI.bannerConfig();
+    _bannerConfig = res.data;
+  }
+
+  Future<void> _fetchRecommendedServices() async {
+    final ResponseModel<ServiceModel> res =
+        await PortalAPI.servicesForceRecommended();
+    _services = res.models;
+  }
+}
+
 @FFRoute(name: 'jmu://main-page', routeName: '首页')
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -48,62 +124,102 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  Widget _swatchColorBuilder(Color color) {
+    return Positioned.fill(
+      bottom: null,
+      child: ClipPath(
+        clipper: const _ArcClipper(0.75),
+        child: AnimatedContainer(
+          duration: kThemeAnimationDuration,
+          height: 250,
+          color: color,
+        ),
+      ),
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(_) {
     return Scaffold(
-      backgroundColor: defaultLightColor,
-      body: SafeArea(
-        bottom: false,
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverToBoxAdapter(child: _searchBar(context)),
-            const SliverToBoxAdapter(child: _QuickActionsPanel()),
-            const SliverToBoxAdapter(child: _BannerPanel()),
-            const _RecommendedServicesPanel(),
-          ],
+      body: ChangeNotifierProvider<MainPageNotifier>(
+        create: (_) => MainPageNotifier(),
+        builder: (_, __) => Consumer<MainPageNotifier>(
+          builder: (BuildContext context, MainPageNotifier m, _) {
+            if (m._isLoading && m.isEmpty) {
+              return const Center(
+                child: LoadingProgressIndicator(),
+              );
+            }
+            if (m._hasError) {
+              return const ListEmptyIndicator(isSliver: false, isError: true);
+            }
+            return Stack(
+              children: <Widget>[
+                _swatchColorBuilder(m.swatchColor),
+                Positioned.fill(
+                  child: SafeArea(
+                    bottom: false,
+                    child: CustomScrollView(
+                      slivers: <Widget>[
+                        SliverToBoxAdapter(child: _searchBar(context)),
+                        if (m._systemConfig != null)
+                          SliverToBoxAdapter(
+                            child: _QuickActionsPanel(m._systemConfig!),
+                          ),
+                        if (m._bannerConfig != null)
+                          SliverToBoxAdapter(
+                            child: _BannerPanel(m._bannerConfig!),
+                          ),
+                        if (m._services != null)
+                          _RecommendedServicesPanel(m._services!),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
   }
 }
 
-class _QuickActionsPanel extends StatefulWidget {
-  const _QuickActionsPanel({Key? key}) : super(key: key);
+class _ArcClipper extends CustomClipper<Path> {
+  const _ArcClipper(this.ratio) : assert(ratio > 0 && ratio < 1);
+
+  final double ratio;
 
   @override
-  _QuickActionsPanelState createState() => _QuickActionsPanelState();
+  Path getClip(Size size) {
+    final Path path = Path()
+      ..lineTo(size.width, 0)
+      ..lineTo(size.width, size.height * ratio)
+      ..quadraticBezierTo(size.width / 2, size.height, 0, size.height * ratio)
+      ..lineTo(0, 0)
+      ..close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(_ArcClipper oldClipper) => ratio != oldClipper.ratio;
 }
 
-class _QuickActionsPanelState extends State<_QuickActionsPanel> {
-  SystemConfig? _config;
+class _QuickActionsPanel extends StatelessWidget {
+  const _QuickActionsPanel(this._config, {Key? key}) : super(key: key);
 
-  @override
-  void initState() {
-    super.initState();
-    _fetch();
-  }
-
-  Future<void> _fetch() async {
-    final ResponseModel<SystemConfig> res = await PortalAPI.systemConfig();
-    _config = res.data;
-    if (mounted) {
-      setState(() {});
-    }
-  }
+  final SystemConfig _config;
 
   @override
   Widget build(BuildContext context) {
-    if (_config == null) {
-      return const PlatformProgressIndicator();
-    }
     return SizedBox(
       height: 72,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: List<Widget>.generate(
-          _config!.eCardSets.length,
+          _config.eCardSets.length,
           (int i) {
-            final SystemConfigECard slot = _config!.eCardSets[i];
+            final SystemConfigECard slot = _config.eCardSets[i];
             return GestureDetector(
               onTap: () {
                 if (slot.composedUrl != null) {
@@ -119,7 +235,7 @@ class _QuickActionsPanelState extends State<_QuickActionsPanel> {
                   Image.network(slot.imageUrl, height: 30),
                   Text(
                     slot.name,
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
                   ),
                 ],
               ),
@@ -131,41 +247,21 @@ class _QuickActionsPanelState extends State<_QuickActionsPanel> {
   }
 }
 
-class _BannerPanel extends StatefulWidget {
-  const _BannerPanel({Key? key}) : super(key: key);
+class _BannerPanel extends StatelessWidget {
+  const _BannerPanel(this._config, {Key? key}) : super(key: key);
 
-  @override
-  _BannerPanelState createState() => _BannerPanelState();
-}
-
-class _BannerPanelState extends State<_BannerPanel> {
-  BannerConfig? _config;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetch();
-  }
-
-  Future<void> _fetch() async {
-    final ResponseModel<BannerConfig> res = await PortalAPI.bannerConfig();
-    _config = res.data;
-    if (mounted) {
-      setState(() {});
-    }
-  }
+  final BannerConfig _config;
 
   @override
   Widget build(BuildContext context) {
-    if (_config == null) {
-      return const PlatformProgressIndicator();
-    }
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: SliderView<BannerModel>(
-        models: _config!.marqueePics,
+        models: _config.marqueePics,
         imageBuilder: (BannerModel m) => m.picUrl,
         borderRadius: 10,
+        onPageChanged: (int page) =>
+            context.read<MainPageNotifier>().currentBanner = page,
         onItemTap: (int index, BannerModel m) {
           if (m.url != null) {
             navigator.pushNamed(
@@ -182,31 +278,10 @@ class _BannerPanelState extends State<_BannerPanel> {
   }
 }
 
-class _RecommendedServicesPanel extends StatefulWidget {
-  const _RecommendedServicesPanel({Key? key}) : super(key: key);
+class _RecommendedServicesPanel extends StatelessWidget {
+  const _RecommendedServicesPanel(this._services, {Key? key}) : super(key: key);
 
-  @override
-  _RecommendedServicesPanelState createState() =>
-      _RecommendedServicesPanelState();
-}
-
-class _RecommendedServicesPanelState extends State<_RecommendedServicesPanel> {
-  List<ServiceModel>? _services;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetch();
-  }
-
-  Future<void> _fetch() async {
-    final ResponseModel<ServiceModel> res =
-        await PortalAPI.servicesForceRecommended();
-    _services = res.models;
-    if (mounted) {
-      setState(() {});
-    }
-  }
+  final List<ServiceModel> _services;
 
   @override
   Widget build(BuildContext context) {
@@ -216,7 +291,7 @@ class _RecommendedServicesPanelState extends State<_RecommendedServicesPanel> {
     return SliverGrid(
       delegate: SliverChildBuilderDelegate(
         (BuildContext context, int index) {
-          final ServiceModel service = _services![index];
+          final ServiceModel service = _services[index];
           return GestureDetector(
             onTap: () {
               navigator.pushNamed(
@@ -233,7 +308,7 @@ class _RecommendedServicesPanelState extends State<_RecommendedServicesPanel> {
             ),
           );
         },
-        childCount: _services!.length,
+        childCount: _services.length,
       ),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
