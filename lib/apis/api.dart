@@ -29,4 +29,6 @@ class API {
   static const String services = '$portalServiceHost/v1/service';
   static const String servicesForceRecommended =
       '$services/findForceRecommService';
+
+  static const String search = '$portalServiceHost/v1/search/globalSearch';
 }

@@ -110,6 +110,135 @@ Map<String, dynamic> _$BannerModelToJson(BannerModel instance) =>
       'sort': instance.sort,
     };
 
+SearchResult _$SearchResultFromJson(Map<String, dynamic> json) {
+  return SearchResult(
+    total: json['totalHits'] as int? ?? 0,
+    relationType: json['totalHitsRelation'] as String?,
+    maxScore: dTryParseDouble(json['maxScore'] as Object),
+    scrollId: json['scrollId'] as String?,
+    items: (json['searchHits'] as List<dynamic>?)
+            ?.map((e) => SearchResultItem.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        [],
+    aggregations: json['aggregations'],
+    empty: json['empty'] as bool? ?? false,
+  );
+}
+
+Map<String, dynamic> _$SearchResultToJson(SearchResult instance) =>
+    <String, dynamic>{
+      'totalHits': instance.total,
+      'totalHitsRelation': instance.relationType,
+      'maxScore': instance.maxScore,
+      'scrollId': instance.scrollId,
+      'searchHits': instance.items,
+      'aggregations': instance.aggregations,
+      'empty': instance.empty,
+    };
+
+SearchResultItem _$SearchResultItemFromJson(Map<String, dynamic> json) {
+  return SearchResultItem(
+    id: json['id'] as String,
+    score: dTryParseDouble(json['score'] as Object),
+    sortValues: json['sortValues'] as List<dynamic>,
+    content: SearchResultItemContent.fromJson(
+        json['content'] as Map<String, dynamic>),
+    highlightFields: SearchResultItemHighlightFields.fromJson(
+        json['highlightFields'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$SearchResultItemToJson(SearchResultItem instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'score': instance.score,
+      'sortValues': instance.sortValues,
+      'content': instance.content,
+      'highlightFields': instance.highlightFields,
+    };
+
+SearchResultItemContent _$SearchResultItemContentFromJson(
+    Map<String, dynamic> json) {
+  return SearchResultItemContent(
+    serviceType: json['serviceType'] as String,
+    serveImageUrl: json['serveImageUrl'] as String,
+    serveNum: json['serveNum'] as String,
+    serveId: json['serveId'] as String,
+    permission: (json['permission'] as List<dynamic>?)
+            ?.map((e) => e as String)
+            .toList() ??
+        [],
+    type: json['type'] as String,
+    serveSource: json['serveSource'] as String,
+    serveLabel: (json['serveLable'] as List<dynamic>?)
+            ?.map((e) => e as String)
+            .toList() ??
+        [],
+    serveName: json['serveName'] as String,
+    serveUrl: json['serveUrl'] as String,
+    hiddenClass: json['_class'] as String,
+    startDate: json['startDate'] as int,
+    serveTerminal: (json['serveTerminal'] as List<dynamic>?)
+            ?.map((e) => e as String)
+            .toList() ??
+        [],
+  );
+}
+
+Map<String, dynamic> _$SearchResultItemContentToJson(
+        SearchResultItemContent instance) =>
+    <String, dynamic>{
+      'serviceType': instance.serviceType,
+      'serveImageUrl': instance.serveImageUrl,
+      'serveNum': instance.serveNum,
+      'serveId': instance.serveId,
+      'permission': instance.permission,
+      'type': instance.type,
+      'serveSource': instance.serveSource,
+      'serveLable': instance.serveLabel,
+      'serveName': instance.serveName,
+      'serveUrl': instance.serveUrl,
+      '_class': instance.hiddenClass,
+      'startDate': instance.startDate,
+      'serveTerminal': instance.serveTerminal,
+    };
+
+SearchResultItemHighlightFields _$SearchResultItemHighlightFieldsFromJson(
+    Map<String, dynamic> json) {
+  return SearchResultItemHighlightFields(
+    serviceType: (json['serviceType'] as List<dynamic>?)
+            ?.map((e) => e as String)
+            .toList() ??
+        [],
+    serveName: (json['serveName'] as List<dynamic>?)
+            ?.map((e) => e as String)
+            .toList() ??
+        [],
+    serviceKeyword: (json['service.keyword'] as List<dynamic>?)
+            ?.map((e) => e as String)
+            .toList() ??
+        [],
+    permission: (json['permission'] as List<dynamic>?)
+            ?.map((e) => e as String)
+            .toList() ??
+        [],
+    serveTerminal: (json['serveTerminal'] as List<dynamic>?)
+            ?.map((e) => e as String)
+            .toList() ??
+        [],
+  );
+}
+
+Map<String, dynamic> _$SearchResultItemHighlightFieldsToJson(
+        SearchResultItemHighlightFields instance) =>
+    <String, dynamic>{
+      'serviceType': instance.serviceType,
+      'serveName': instance.serveName,
+      'service.keyword': instance.serviceKeyword,
+      'permission': instance.permission,
+      'serveTerminal': instance.serveTerminal,
+    };
+
 ServiceModel _$ServiceModelFromJson(Map<String, dynamic> json) {
   return ServiceModel(
     id: json['id'] as String,
@@ -133,7 +262,7 @@ ServiceModel _$ServiceModelFromJson(Map<String, dynamic> json) {
     serviceDepartmentCode: json['serviceDepartmentCode'] as String,
     haveGuide: dBoolFromString(json['haveGuide'] as String?),
     flowId: json['flowId'],
-    sortNum: (json['sortNum'] as num? ?? 0).toDouble(),
+    sortNum: (json['sortNum'] as num?)?.toDouble() ?? 0,
     publicAccess: dBoolFromString(json['publicAccess'] as String?),
     recommend: dBoolFromString(json['recommend'] as String?),
     recommendMonths: dListFromString(json['recommendMonths'] as String?),
@@ -255,9 +384,9 @@ SystemConfigECard _$SystemConfigECardFromJson(Map<String, dynamic> json) {
     imageUrl: json['imageUrl'] as String,
     name: json['name'] as String,
     isScan: json['scan'] as bool? ?? false,
-    requestUrl: json['reqUrl'] as String?,
     html: json['html'] as bool? ?? true,
     smallImage: json['smallImage'] as String,
+    requestUrl: json['reqUrl'] as String?,
   );
 }
 
@@ -266,9 +395,9 @@ Map<String, dynamic> _$SystemConfigECardToJson(SystemConfigECard instance) =>
       'imageUrl': instance.imageUrl,
       'name': instance.name,
       'scan': instance.isScan,
-      'reqUrl': instance.requestUrl,
       'html': instance.html,
       'smallImage': instance.smallImage,
+      'reqUrl': instance.requestUrl,
     };
 
 TokenModel _$TokenModelFromJson(Map<String, dynamic> json) {

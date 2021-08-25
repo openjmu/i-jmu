@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 const List<String> routeNames = <String>[
   'jmu://login-page',
   'jmu://main-page',
+  'jmu://search-page',
   'jmu://splash-page',
   'jmu://web-view',
 ];
@@ -36,6 +37,17 @@ class Routes {
   ///
   /// MainPage : [Key? key]
   static const _JmuMainPage jmuMainPage = _JmuMainPage();
+
+  /// '搜索页'
+  ///
+  /// [name] : 'jmu://search-page'
+  ///
+  /// [routeName] : '搜索页'
+  ///
+  /// [constructors] :
+  ///
+  /// SearchPage : [Key? key]
+  static const _JmuSearchPage jmuSearchPage = _JmuSearchPage();
 
   /// '闪屏页'
   ///
@@ -77,6 +89,19 @@ class _JmuMainPage {
   const _JmuMainPage();
 
   String get name => 'jmu://main-page';
+
+  Map<String, dynamic> d({Key? key}) => <String, dynamic>{
+        'key': key,
+      };
+
+  @override
+  String toString() => name;
+}
+
+class _JmuSearchPage {
+  const _JmuSearchPage();
+
+  String get name => 'jmu://search-page';
 
   Map<String, dynamic> d({Key? key}) => <String, dynamic>{
         'key': key,

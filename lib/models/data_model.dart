@@ -2,6 +2,7 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 11/26/20 4:31 PM
 ///
+import 'package:flutter/widgets.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -15,6 +16,8 @@ part 'banner_config_model.dart';
 part 'data_model.d.dart';
 
 part 'data_model.g.dart';
+
+part 'search_result.dart';
 
 part 'service_model.dart';
 

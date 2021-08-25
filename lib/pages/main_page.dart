@@ -16,31 +16,34 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   Widget _searchBar(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(kToolbarHeight / 4),
-      height: kToolbarHeight,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                borderRadius: RadiusConstants.max,
-                color: context.surfaceColor.withOpacity(.3),
-              ),
-              child: Row(
-                children: const <Widget>[
-                  Icon(Icons.search, color: Colors.white, size: 18),
-                  Text(
-                    '大家都在搜：iJMU',
-                    style: TextStyle(color: Colors.white, height: 1.25),
-                  ),
-                ],
+    return GestureDetector(
+      onTap: () => navigator.pushNamed(Routes.jmuSearchPage.name),
+      child: Container(
+        padding: const EdgeInsets.all(kToolbarHeight / 4),
+        height: kToolbarHeight,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  borderRadius: RadiusConstants.max,
+                  color: context.surfaceColor.withOpacity(.3),
+                ),
+                child: Row(
+                  children: const <Widget>[
+                    Icon(Icons.search, color: Colors.white, size: 18),
+                    Text(
+                      '大家都在搜：iJMU',
+                      style: TextStyle(color: Colors.white, height: 1.25),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -111,7 +114,7 @@ class _QuickActionsPanelState extends State<_QuickActionsPanel> {
                 }
               },
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Image.network(slot.imageUrl, height: 30),
                   Text(

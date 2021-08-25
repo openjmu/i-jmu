@@ -295,7 +295,9 @@ class ListEmptyIndicator extends StatelessWidget {
                   (isError
                       ? R.ASSETS_PLACEHOLDER_NO_NETWORK_SVG
                       : R.ASSETS_PLACEHOLDER_SEARCH_NO_RESULT_SVG),
-              width: 150,
+              width: 80,
+              height: 80,
+              color: context.textTheme.caption?.color,
             ),
             const Gap.v(20),
             Text(_text),

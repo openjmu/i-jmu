@@ -8,6 +8,7 @@ import 'package:ff_annotation_route_library/ff_annotation_route_library.dart';
 import 'package:flutter/widgets.dart';
 import 'pages/login_page.dart';
 import 'pages/main_page.dart';
+import 'pages/search_page.dart';
 import 'pages/splash_page.dart';
 import 'widgets/in_app_webview.dart';
 
@@ -36,6 +37,15 @@ FFRouteSettings getRouteSettings({
           key: asT<Key?>(safeArguments['key']),
         ),
         routeName: '首页',
+      );
+    case 'jmu://search-page':
+      return FFRouteSettings(
+        name: name,
+        arguments: arguments,
+        widget: SearchPage(
+          key: asT<Key?>(safeArguments['key']),
+        ),
+        routeName: '搜索页',
       );
     case 'jmu://splash-page':
       return FFRouteSettings(

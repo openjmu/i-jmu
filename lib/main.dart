@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 import 'constants/exports.dart';
 
 Future<void> main() async {
@@ -21,18 +22,25 @@ class IJMUApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(primarySwatch: defaultLightColor.swatch),
-      navigatorKey: Instances.navigatorKey,
-      onGenerateRoute: (RouteSettings settings) => onGenerateRoute(
-        settings: settings,
-        getRouteSettings: getRouteSettings,
-      ),
-      initialRoute: Routes.jmuSplashPage.name,
-      builder: (BuildContext c, Widget? w) => RepaintBoundary(
-        key: Instances.appRepaintBoundaryKey,
-        child: DoubleBackExitWrapper(child: w!),
+    final ThemeData theme = ThemeData(primarySwatch: defaultLightColor.swatch);
+    return Theme(
+      data: theme,
+      child: OKToast(
+        position: ToastPosition.bottom,
+        child: MaterialApp(
+          title: 'Flutter Demo',
+          theme: theme,
+          navigatorKey: Instances.navigatorKey,
+          onGenerateRoute: (RouteSettings settings) => onGenerateRoute(
+            settings: settings,
+            getRouteSettings: getRouteSettings,
+          ),
+          initialRoute: Routes.jmuSplashPage.name,
+          builder: (BuildContext c, Widget? w) => RepaintBoundary(
+            key: Instances.appRepaintBoundaryKey,
+            child: DoubleBackExitWrapper(child: w!),
+          ),
+        ),
       ),
     );
   }

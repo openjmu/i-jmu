@@ -11,3 +11,13 @@ bool dBoolFromString(String? v) =>
 
 List<String> dListFromString(String? v, {String splitter = ','}) =>
     v?.split(splitter) ?? <String>[];
+
+double dTryParseDouble(Object v) {
+  if (v is double) {
+    return v;
+  }
+  if (v == 'NaN') {
+    return 0;
+  }
+  return double.tryParse(v.toString()) ?? 0;
+}
