@@ -16,7 +16,7 @@ class SliderView<T> extends StatefulWidget {
     this.height,
     this.aspectRatio = 345 / 135,
     this.autoScroll = true,
-    this.interval = const Duration(seconds: 3),
+    this.interval = const Duration(seconds: 5),
     this.borderRadius = 0,
     this.showIndicator = true,
     this.indicatorSize = 8,
