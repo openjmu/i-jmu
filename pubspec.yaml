@@ -16,7 +16,7 @@ dependencies:
     sdk: flutter
 
   # Android Intent
-  android_intent_plus: ^1.0.2
+  android_intent_plus: ^2.0.0
   # Android Scheme 获取 App 名称
   android_scheme_search: ^1.0.0
   # 加密
@@ -38,7 +38,7 @@ dependencies:
   # 文件操作
   open_file: ^3.2.1
   # 软件包信息解析
-  package_info_plus: ^1.0.3
+  package_info_plus: ^1.0.6
   # 原生路径处理
   path_provider: ^2.0.1
   # 权限管理

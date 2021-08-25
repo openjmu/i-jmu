@@ -44,11 +44,6 @@ android {
         versionName flutterVersionName
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
     signingConfigs {
         config {
             keyAlias keystoreProperties["keyAlias"]
@@ -87,7 +82,7 @@ android {
 
 task copyRelease {
     doLast {
-        def fromFile = "../../build/app/outputs/apk/release/app-release.apk"
+        def fromFile = "../../build/app/outputs/flutter-apk/app-release.apk"
         def intoFile = "../../release/"
         def sourceFile = file(fromFile)
         def destinationPath = file(intoFile)
@@ -116,4 +111,8 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+}
+
+def static buildTime() {
+    return new Date().format("MMdd-HHmmss")
 }
