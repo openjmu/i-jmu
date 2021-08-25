@@ -512,7 +512,6 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
         return GeolocationPermissionShowPromptResponse(
           allow: await checkPermissions(<Permission>[Permission.location]),
           origin: origin,
-          retain: true,
         );
       },
     );
