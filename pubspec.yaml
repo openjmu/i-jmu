@@ -31,6 +31,8 @@ dependencies:
   ff_annotation_route_library: ^2.0.1
   # WebView
   flutter_inappwebview: ^5.3.2
+  # 处理 SVG 资源
+  flutter_svg: ^0.22.0
   # 以 Overlay 实现的全局悬浮，包括普通的 Toast
   oktoast: ^3.0.0
   # 文件操作
@@ -48,6 +50,10 @@ dependencies:
   # UUID
   uuid: ^3.0.4
 
+  # 上拉加载和下拉刷新
+  loading_more_list: ^4.1.0
+  pull_to_refresh_notification: ^2.1.0
+
   # 数据存储
   hive: ^2.0.4
   hive_flutter: ^1.1.0
@@ -63,3 +69,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/
+    - assets/placeholder/
