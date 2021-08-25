@@ -34,13 +34,13 @@ dependencies:
   # 处理 SVG 资源
   flutter_svg: ^0.22.0
   # 以 Overlay 实现的全局悬浮，包括普通的 Toast
-  oktoast: ^3.0.0
+  oktoast: ^3.1.1
   # 文件操作
   open_file: ^3.2.1
   # 软件包信息解析
   package_info_plus: ^1.0.6
   # 原生路径处理
-  path_provider: ^2.0.1
+  path_provider: ^2.0.2
   # 权限管理
   permission_handler: ^8.1.4+2
   # 图库管理
@@ -61,7 +61,7 @@ dependencies:
 ### 开发时使用的包，不会进入最终生产
 dev_dependencies:
   args: ^2.2.0
-  build_runner: ^2.0.6
+  build_runner: ^2.1.1
   # 数据存储 Type Adapter 生成
   hive_generator: ^1.1.0
   # Json Model <=> 序列化生成库
