@@ -7,6 +7,7 @@ export 'package:hive_flutter/hive_flutter.dart';
 export 'package:ff_annotation_route_library/ff_annotation_route_library.dart';
 export 'package:permission_handler/permission_handler.dart'
     show Permission, PermissionStatus;
+export 'package:provider/provider.dart';
 
 export 'package:i_jmu/i_jmu_route.dart';
 export 'package:i_jmu/i_jmu_routes.dart';
@@ -46,12 +47,13 @@ export '../widgets/dialogs/base_action_sheet.dart';
 export '../widgets/dialogs/base_dialog.dart';
 export '../widgets/dialogs/confirmation_bottom_sheet.dart';
 export '../widgets/dialogs/dialog_backdrop_dismiss_detector.dart';
-export '../widgets/dialogs/loading_dialog.dart';
 export '../widgets/dismiss_wrapper.dart';
 export '../widgets/double_back_exit_wrapper.dart';
 export '../widgets/fixed_appbar.dart';
 export '../widgets/gaps.dart';
 export '../widgets/in_app_webview.dart';
+export '../widgets/loading/loading_dialog.dart';
+export '../widgets/loading/loading_progress_indicator.dart';
 export '../widgets/platform_progress_indicator.dart';
 export '../widgets/refresh/pull_to_refresh_header.dart';
 export '../widgets/refresh/refresh_list_wrapper.dart';
