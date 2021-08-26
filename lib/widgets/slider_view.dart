@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../constants/instances.dart';
+import 'loading/loading_progress_indicator.dart';
 
 /// 轮播图组件
 class SliderView<T> extends StatefulWidget {
@@ -304,10 +305,9 @@ class SlideViewState<T> extends State<SliderView<T>>
   Widget _buildItem(BuildContext context, int index) {
     final int _index = index % widget.models.length;
     final T _model = widget.models[_index];
-    final String _url = widget.imageBuilder(_model);
     Widget item = GestureDetector(
       onTap: () => widget.onItemTap(_index, _model),
-      child: Image.network(_url, fit: BoxFit.cover),
+      child: _buildImage(widget.imageBuilder(_model)),
     );
 
     // 圆角有效时，针对圆角进行裁剪。
@@ -318,6 +318,36 @@ class SlideViewState<T> extends State<SliderView<T>>
       );
     }
     return item;
+  }
+
+  Widget _buildImage(String url) {
+    return Image.network(
+      url,
+      fit: BoxFit.cover,
+      frameBuilder: (BuildContext c, Widget w, int? f, bool l) {
+        if (l) {
+          return w;
+        }
+        return AnimatedOpacity(
+          opacity: f == null ? 0 : 1,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+          child: w,
+        );
+      },
+      loadingBuilder: (BuildContext c, Widget w, ImageChunkEvent? p) {
+        if (p == null) {
+          return w;
+        }
+        return Center(
+          child: LoadingProgressIndicator(
+            value: p.expectedTotalBytes != null
+                ? p.cumulativeBytesLoaded / p.expectedTotalBytes!
+                : null,
+          ),
+        );
+      },
+    );
   }
 
   @override
