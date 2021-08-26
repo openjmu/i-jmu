@@ -8,6 +8,7 @@ import 'package:i_jmu/constants/exports.dart';
 
 class MainPageNotifier extends ChangeNotifier {
   MainPageNotifier() {
+    recoverFromCaches();
     request();
   }
 
@@ -43,6 +44,13 @@ class MainPageNotifier extends ChangeNotifier {
     );
   }
 
+  void recoverFromCaches() {
+    _systemConfig =
+        Boxes.dataCachesBox.get(BoxFields.nMainSystemConfig) as SystemConfig?;
+    _bannerConfig =
+        Boxes.dataCachesBox.get(BoxFields.nMainBannerConfig) as BannerConfig?;
+  }
+
   Future<void> request() async {
     _isLoading = true;
     _hasError = false;
@@ -68,11 +76,13 @@ class MainPageNotifier extends ChangeNotifier {
   Future<void> _fetchSystemConfig() async {
     final ResponseModel<SystemConfig> res = await PortalAPI.systemConfig();
     _systemConfig = res.data;
+    Boxes.dataCachesBox.put(BoxFields.nMainSystemConfig, res.data);
   }
 
   Future<void> _fetchBannerConfig() async {
     final ResponseModel<BannerConfig> res = await PortalAPI.bannerConfig();
     _bannerConfig = res.data;
+    Boxes.dataCachesBox.put(BoxFields.nMainBannerConfig, res.data);
   }
 
   Future<void> _fetchRecommendedServices() async {
@@ -210,37 +220,47 @@ class _QuickActionsPanel extends StatelessWidget {
 
   final SystemConfig _config;
 
+  void _onTap(SystemConfigECard slot) {
+    if (slot.isScan) {
+      showToast('尚未支持扫码');
+      return;
+    }
+    if (slot.composedUrl != null) {
+      navigator.pushNamed(
+        Routes.jmuWebView.name,
+        arguments: Routes.jmuWebView.d(url: slot.composedUrl!),
+      );
+    }
+  }
+
+  Widget _slotBuilder(int index) {
+    final SystemConfigECard slot = _config.eCardSets[index];
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => _onTap(slot),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Image.network(slot.imageUrl, height: 30),
+            Text(
+              slot.name,
+              style: const TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       height: 72,
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: List<Widget>.generate(
           _config.eCardSets.length,
-          (int i) {
-            final SystemConfigECard slot = _config.eCardSets[i];
-            return GestureDetector(
-              onTap: () {
-                if (slot.composedUrl != null) {
-                  navigator.pushNamed(
-                    Routes.jmuWebView.name,
-                    arguments: Routes.jmuWebView.d(url: slot.composedUrl!),
-                  );
-                }
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Image.network(slot.imageUrl, height: 30),
-                  Text(
-                    slot.name,
-                    style: const TextStyle(color: Colors.white, fontSize: 12),
-                  ),
-                ],
-              ),
-            );
-          },
+          _slotBuilder,
         ),
       ),
     );

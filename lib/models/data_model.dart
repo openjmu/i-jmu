@@ -4,9 +4,11 @@
 ///
 import 'package:flutter/widgets.dart';
 import 'package:equatable/equatable.dart';
+import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../apis/api.dart';
+import '../constants/boxes.dart';
 import '../constants/constants.dart';
 import '../extensions/object_extension.dart';
 import '../utils/log_util.dart';

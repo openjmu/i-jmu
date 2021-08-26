@@ -3,6 +3,471 @@
 part of 'data_model.dart';
 
 // **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
+
+class BannerConfigAdapter extends TypeAdapter<BannerConfig> {
+  @override
+  final int typeId = 2;
+
+  @override
+  BannerConfig read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return BannerConfig(
+      id: fields[0] as String,
+      typeId: fields[1] as String,
+      picCount: fields[2] as int,
+      picSource: fields[3] as String,
+      quoteTarget: fields[4] as Object?,
+      quoteLevel: fields[5] as Object?,
+      quoteTime: fields[6] as String?,
+      createUserId: fields[7] as String,
+      createUserCode: fields[8] as String?,
+      createTime: fields[9] as String,
+      updateUserId: fields[10] as Object?,
+      updateUserCode: fields[11] as String?,
+      updateTime: fields[12] as String?,
+      addLink: fields[13] as Object?,
+      title: fields[14] as String,
+      enableStatus: fields[15] as bool,
+      exhibitType: fields[16] as Object?,
+      exhibitStartDate: fields[17] as String?,
+      putOffEndDate: fields[18] as String?,
+      marqueePics: (fields[19] as List).cast<BannerModel>(),
+      marqueeTypeCode: fields[20] as String?,
+      marqueeTypeName: fields[21] as String?,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, BannerConfig obj) {
+    writer
+      ..writeByte(22)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.typeId)
+      ..writeByte(2)
+      ..write(obj.picCount)
+      ..writeByte(3)
+      ..write(obj.picSource)
+      ..writeByte(4)
+      ..write(obj.quoteTarget)
+      ..writeByte(5)
+      ..write(obj.quoteLevel)
+      ..writeByte(6)
+      ..write(obj.quoteTime)
+      ..writeByte(7)
+      ..write(obj.createUserId)
+      ..writeByte(8)
+      ..write(obj.createUserCode)
+      ..writeByte(9)
+      ..write(obj.createTime)
+      ..writeByte(10)
+      ..write(obj.updateUserId)
+      ..writeByte(11)
+      ..write(obj.updateUserCode)
+      ..writeByte(12)
+      ..write(obj.updateTime)
+      ..writeByte(13)
+      ..write(obj.addLink)
+      ..writeByte(14)
+      ..write(obj.title)
+      ..writeByte(15)
+      ..write(obj.enableStatus)
+      ..writeByte(16)
+      ..write(obj.exhibitType)
+      ..writeByte(17)
+      ..write(obj.exhibitStartDate)
+      ..writeByte(18)
+      ..write(obj.putOffEndDate)
+      ..writeByte(19)
+      ..write(obj.marqueePics)
+      ..writeByte(20)
+      ..write(obj.marqueeTypeCode)
+      ..writeByte(21)
+      ..write(obj.marqueeTypeName);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BannerConfigAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class BannerModelAdapter extends TypeAdapter<BannerModel> {
+  @override
+  final int typeId = 3;
+
+  @override
+  BannerModel read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return BannerModel(
+      id: fields[0] as String,
+      marqueeId: fields[1] as String,
+      url: fields[7] as String?,
+      picDesc: fields[8] as String?,
+      urlName: fields[9] as String?,
+      picUrl: fields[2] as String,
+      createUserId: fields[3] as String,
+      createUserCode: fields[10] as String?,
+      createTime: fields[4] as String,
+      updateUserId: fields[11] as String?,
+      updateUserCode: fields[12] as String?,
+      updateTime: fields[13] as String?,
+      color: fields[5] as String,
+      title: fields[6] as String,
+      contentId: fields[14] as String?,
+      sort: fields[15] as Object?,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, BannerModel obj) {
+    writer
+      ..writeByte(16)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.marqueeId)
+      ..writeByte(2)
+      ..write(obj.picUrl)
+      ..writeByte(3)
+      ..write(obj.createUserId)
+      ..writeByte(4)
+      ..write(obj.createTime)
+      ..writeByte(5)
+      ..write(obj.color)
+      ..writeByte(6)
+      ..write(obj.title)
+      ..writeByte(7)
+      ..write(obj.url)
+      ..writeByte(8)
+      ..write(obj.picDesc)
+      ..writeByte(9)
+      ..write(obj.urlName)
+      ..writeByte(10)
+      ..write(obj.createUserCode)
+      ..writeByte(11)
+      ..write(obj.updateUserId)
+      ..writeByte(12)
+      ..write(obj.updateUserCode)
+      ..writeByte(13)
+      ..write(obj.updateTime)
+      ..writeByte(14)
+      ..write(obj.contentId)
+      ..writeByte(15)
+      ..write(obj.sort);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BannerModelAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class ServiceModelAdapter extends TypeAdapter<ServiceModel> {
+  @override
+  final int typeId = 4;
+
+  @override
+  ServiceModel read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return ServiceModel(
+      id: fields[0] as String,
+      ownerApplication: fields[1] as String?,
+      serviceName: fields[2] as String,
+      servicePicUrl: fields[3] as String,
+      serviceProfile: fields[4] as Object?,
+      status: fields[5] as String,
+      createTime: fields[6] as String,
+      updateTime: fields[7] as String?,
+      serviceDesc: fields[8] as String,
+      servicePinYin: fields[9] as String,
+      collectNum: fields[10] as int?,
+      serviceNo: fields[11] as String,
+      contactInformation: fields[12] as String?,
+      serviceSource: fields[13] as String,
+      serviceType: fields[14] as String,
+      clickNum: fields[15] as int,
+      createUserCode: fields[16] as String,
+      updateUserCode: fields[17] as String?,
+      serviceDepartmentCode: fields[18] as String,
+      haveGuide: fields[19] as bool,
+      flowId: fields[20] as Object?,
+      sortNum: fields[21] as double,
+      publicAccess: fields[22] as bool,
+      recommend: fields[23] as bool,
+      recommendMonths: (fields[24] as List).cast<String>(),
+      serviceDepartmentName: fields[25] as String,
+      checkUrl: fields[26] as String?,
+      formId: fields[27] as Object?,
+      printId: fields[28] as Object?,
+      yyId: fields[29] as Object?,
+      forceRecommend: fields[30] as bool,
+      sourceType: fields[31] as String,
+      unlineHand: fields[32] as Object?,
+      runTime: fields[33] as String?,
+      serviceUrl: fields[34] as String,
+      iconUrl: fields[35] as String,
+      terminalName: fields[36] as String?,
+      tokenAccept: fields[37] as String?,
+      techType: fields[38] as String,
+      labelNames: (fields[39] as List).cast<String>(),
+      collect: fields[40] as bool,
+      terminals: fields[41] as Object?,
+      labelId: fields[42] as Object?,
+      releaseTime: fields[43] as String?,
+      needLocalNetWork: fields[44] as Object?,
+      serviceCas: fields[45] as Object?,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, ServiceModel obj) {
+    writer
+      ..writeByte(46)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.ownerApplication)
+      ..writeByte(2)
+      ..write(obj.serviceName)
+      ..writeByte(3)
+      ..write(obj.servicePicUrl)
+      ..writeByte(4)
+      ..write(obj.serviceProfile)
+      ..writeByte(5)
+      ..write(obj.status)
+      ..writeByte(6)
+      ..write(obj.createTime)
+      ..writeByte(7)
+      ..write(obj.updateTime)
+      ..writeByte(8)
+      ..write(obj.serviceDesc)
+      ..writeByte(9)
+      ..write(obj.servicePinYin)
+      ..writeByte(10)
+      ..write(obj.collectNum)
+      ..writeByte(11)
+      ..write(obj.serviceNo)
+      ..writeByte(12)
+      ..write(obj.contactInformation)
+      ..writeByte(13)
+      ..write(obj.serviceSource)
+      ..writeByte(14)
+      ..write(obj.serviceType)
+      ..writeByte(15)
+      ..write(obj.clickNum)
+      ..writeByte(16)
+      ..write(obj.createUserCode)
+      ..writeByte(17)
+      ..write(obj.updateUserCode)
+      ..writeByte(18)
+      ..write(obj.serviceDepartmentCode)
+      ..writeByte(19)
+      ..write(obj.haveGuide)
+      ..writeByte(20)
+      ..write(obj.flowId)
+      ..writeByte(21)
+      ..write(obj.sortNum)
+      ..writeByte(22)
+      ..write(obj.publicAccess)
+      ..writeByte(23)
+      ..write(obj.recommend)
+      ..writeByte(24)
+      ..write(obj.recommendMonths)
+      ..writeByte(25)
+      ..write(obj.serviceDepartmentName)
+      ..writeByte(26)
+      ..write(obj.checkUrl)
+      ..writeByte(27)
+      ..write(obj.formId)
+      ..writeByte(28)
+      ..write(obj.printId)
+      ..writeByte(29)
+      ..write(obj.yyId)
+      ..writeByte(30)
+      ..write(obj.forceRecommend)
+      ..writeByte(31)
+      ..write(obj.sourceType)
+      ..writeByte(32)
+      ..write(obj.unlineHand)
+      ..writeByte(33)
+      ..write(obj.runTime)
+      ..writeByte(34)
+      ..write(obj.serviceUrl)
+      ..writeByte(35)
+      ..write(obj.iconUrl)
+      ..writeByte(36)
+      ..write(obj.terminalName)
+      ..writeByte(37)
+      ..write(obj.tokenAccept)
+      ..writeByte(38)
+      ..write(obj.techType)
+      ..writeByte(39)
+      ..write(obj.labelNames)
+      ..writeByte(40)
+      ..write(obj.collect)
+      ..writeByte(41)
+      ..write(obj.terminals)
+      ..writeByte(42)
+      ..write(obj.labelId)
+      ..writeByte(43)
+      ..write(obj.releaseTime)
+      ..writeByte(44)
+      ..write(obj.needLocalNetWork)
+      ..writeByte(45)
+      ..write(obj.serviceCas);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ServiceModelAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class SystemConfigAdapter extends TypeAdapter<SystemConfig> {
+  @override
+  final int typeId = 0;
+
+  @override
+  SystemConfig read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return SystemConfig(
+      protocol: fields[0] as String,
+      schoolName: fields[1] as String,
+      favIcon: fields[2] as String?,
+      descIcon: fields[3] as String?,
+      introduction: fields[4] as String,
+      whiteIcon: fields[5] as String?,
+      enabled: fields[6] as bool,
+      appTopLog: fields[7] as String,
+      appAboutLog: fields[8] as String,
+      appTaskLog: fields[9] as String,
+      privacy: fields[10] as String,
+      eCardSets: (fields[11] as List).cast<SystemConfigECard>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, SystemConfig obj) {
+    writer
+      ..writeByte(12)
+      ..writeByte(0)
+      ..write(obj.protocol)
+      ..writeByte(1)
+      ..write(obj.schoolName)
+      ..writeByte(2)
+      ..write(obj.favIcon)
+      ..writeByte(3)
+      ..write(obj.descIcon)
+      ..writeByte(4)
+      ..write(obj.introduction)
+      ..writeByte(5)
+      ..write(obj.whiteIcon)
+      ..writeByte(6)
+      ..write(obj.enabled)
+      ..writeByte(7)
+      ..write(obj.appTopLog)
+      ..writeByte(8)
+      ..write(obj.appAboutLog)
+      ..writeByte(9)
+      ..write(obj.appTaskLog)
+      ..writeByte(10)
+      ..write(obj.privacy)
+      ..writeByte(11)
+      ..write(obj.eCardSets);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SystemConfigAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class SystemConfigECardAdapter extends TypeAdapter<SystemConfigECard> {
+  @override
+  final int typeId = 1;
+
+  @override
+  SystemConfigECard read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return SystemConfigECard(
+      imageUrl: fields[0] as String,
+      name: fields[1] as String,
+      isScan: fields[2] as bool,
+      html: fields[3] as bool,
+      smallImage: fields[4] as String,
+      requestUrl: fields[5] as String?,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, SystemConfigECard obj) {
+    writer
+      ..writeByte(6)
+      ..writeByte(0)
+      ..write(obj.imageUrl)
+      ..writeByte(1)
+      ..write(obj.name)
+      ..writeByte(2)
+      ..write(obj.isScan)
+      ..writeByte(3)
+      ..write(obj.html)
+      ..writeByte(4)
+      ..write(obj.smallImage)
+      ..writeByte(5)
+      ..write(obj.requestUrl);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SystemConfigECardAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+// **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
