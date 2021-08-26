@@ -29,7 +29,6 @@ class MainActivity: FlutterActivity() {
 
     override fun onPostResume() {
         super.onPostResume()
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         window.apply {
             navigationBarColor = 0
             statusBarColor = 0
