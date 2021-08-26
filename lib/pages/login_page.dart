@@ -19,6 +19,7 @@ class LoginNotifier extends BaseChangeNotifier {
       return;
     }
     _username = value;
+    notifyListeners();
   }
 
   bool get canClearUsername => _username.isNotEmpty;
@@ -31,6 +32,7 @@ class LoginNotifier extends BaseChangeNotifier {
       return;
     }
     _password = value;
+    notifyListeners();
   }
 
   bool get checkedAgreement => _checkedAgreement;
@@ -144,6 +146,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
       ..setLooping(false)
       ..pause()
       ..dispose();
+    notifier.dispose();
     super.dispose();
   }
 
@@ -296,7 +299,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
             onTap: _uTec.clear,
             child: SvgPicture.asset(
               R.ASSETS_ICONS_CLEAR_INPUT_SVG,
-              width: 36,
+              width: 24,
               color: context.iconTheme.color,
             ),
           );
@@ -322,7 +325,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
             isObscure
                 ? R.ASSETS_ICONS_NOT_OBSCURE_SVG
                 : R.ASSETS_ICONS_OBSCURE_SVG,
-            width: 36,
+            width: 24,
             color: isObscure ? context.iconTheme.color : defaultLightColor,
           ),
         ),
@@ -334,7 +337,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
   /// 用户协议复选框
   Widget get agreementCheckbox {
     return SizedBox.fromSize(
-      size: const Size.square(28),
+      size: const Size.square(16),
       child: Consumer<LoginNotifier>(
         builder: (_, LoginNotifier p, __) => GestureDetector(
           onTap: () {
@@ -370,7 +373,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
           ],
           style: TextStyle(
             color: value ? Colors.white : null,
-            fontSize: 18,
+            fontSize: 16,
           ),
         ),
         maxLines: 1,
@@ -406,7 +409,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
         onTap: dismissFocusNodes,
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(30),
+            padding: const EdgeInsets.all(24),
             child: SizedBox.expand(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -493,85 +496,90 @@ class LoginPageState extends State<LoginPage> with RouteAware {
   /// 登录按钮
   Widget loginButton(BuildContext context) {
     return Consumer<LoginNotifier>(
-        builder: (_, LoginNotifier p, __) => Positioned.fill(
-              top: null,
-              bottom: Screens.bottomSafeHeight,
-              child: GestureDetector(
-                onTap: () {
-                  if (p.isPreview) {
-                    p.isPreview = false;
-                    Future<void>.delayed(animateDuration * 5, () {
-                      videoController.pause();
-                    });
-                  }
-                  if (p.isLoginButtonEnabled) {
-                    loginButtonPressed(context);
-                  }
-                },
-                child: AnimatedContainer(
-                  duration: animateDuration,
-                  height: 72,
-                  margin: const EdgeInsets.all(30),
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(13),
-                    color: p.isPreview || p.isLoginButtonEnabled
-                        ? defaultLightColor
-                        : Colors.black54,
-                  ),
-                ),
-              ),
+      builder: (_, LoginNotifier p, Widget? child) => Positioned.fill(
+        top: null,
+        bottom: Screens.bottomSafeHeight,
+        child: GestureDetector(
+          onTap: () {
+            if (p.isPreview) {
+              p.isPreview = false;
+              Future<void>.delayed(animateDuration * 5, () {
+                videoController.pause();
+              });
+            }
+            if (p.isLoginButtonEnabled) {
+              loginButtonPressed(context);
+            }
+          },
+          child: AnimatedContainer(
+            duration: animateDuration,
+            height: 56,
+            margin: const EdgeInsets.all(24),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(13),
+              color: p.isPreview || p.isLoginButtonEnabled
+                  ? defaultLightColor
+                  : Colors.black54,
             ),
-        child: Center(
-          child: Selector<LoginNotifier, bool>(
-            selector: (_, LoginNotifier p) => p.isLoading,
-            builder: (_, bool isLoading, __) {
-              Widget _child;
-              if (isLoading) {
-                _child = const LoadingProgressIndicator();
-              } else {
-                _child = const Text(
-                  '登录',
-                  style: TextStyle(
-                    color: Colors.white,
-                    height: 1.2,
-                    letterSpacing: 1,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                );
-              }
-              return AnimatedSwitcher(duration: animateDuration, child: _child);
-            },
+            child: child!,
           ),
-        ));
+        ),
+      ),
+      child: Center(
+        child: Selector<LoginNotifier, bool>(
+          selector: (_, LoginNotifier p) => p.isLoading,
+          builder: (_, bool isLoading, __) {
+            Widget _child;
+            if (isLoading) {
+              _child = const LoadingProgressIndicator();
+            } else {
+              _child = const Text(
+                '登录',
+                style: TextStyle(
+                  color: Colors.white,
+                  height: 1.2,
+                  letterSpacing: 1,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              );
+            }
+            return AnimatedSwitcher(duration: animateDuration, child: _child);
+          },
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     setAlignment(context);
-    return Selector<LoginNotifier, bool>(
-      selector: (_, LoginNotifier p) => p.isPreview,
-      builder: (BuildContext context, bool isPreview, Widget? w) =>
-          AnnotatedRegion<SystemUiOverlayStyle>(
-        value: isPreview || context.brightness == Brightness.dark
-            ? SystemUiOverlayStyle.light
-            : SystemUiOverlayStyle.dark,
-        child: w!,
-      ),
-      child: WillPopScope(
-        onWillPop: doubleBackExit,
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          body: DefaultTextStyle.merge(
-            style: const TextStyle(fontSize: 18),
-            child: Stack(
-              children: <Widget>[
-                videoWidget(context),
-                videoFilter(context),
-                contentWrapper(context),
-                loginButton(context),
-              ],
+    return ChangeNotifierProvider<LoginNotifier>.value(
+      value: notifier,
+      builder: (BuildContext context, _) => Selector<LoginNotifier, bool>(
+        selector: (_, LoginNotifier p) => p.isPreview,
+        builder: (BuildContext context, bool isPreview, Widget? w) =>
+            AnnotatedRegion<SystemUiOverlayStyle>(
+          value: isPreview || context.brightness == Brightness.dark
+              ? SystemUiOverlayStyle.light
+              : SystemUiOverlayStyle.dark,
+          child: w!,
+        ),
+        child: WillPopScope(
+          onWillPop: doubleBackExit,
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: DefaultTextStyle.merge(
+              style: const TextStyle(fontSize: 18),
+              child: Stack(
+                children: <Widget>[
+                  videoWidget(context),
+                  videoFilter(context),
+                  contentWrapper(context),
+                  loginButton(context),
+                ],
+              ),
             ),
           ),
         ),
@@ -603,14 +611,14 @@ class _InputFieldWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: BackdropFilter(
           filter: ui.ImageFilter.blur(sigmaX: 5, sigmaY: 5),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            height: 100,
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            height: 80,
             color: context.theme.canvasColor,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -639,7 +647,7 @@ class _InputFieldWrapper extends StatelessWidget {
                           ),
                           style: context.textTheme.bodyText2?.copyWith(
                             height: 1.26,
-                            fontSize: 36,
+                            fontSize: 28,
                           ),
                         ),
                       ),
