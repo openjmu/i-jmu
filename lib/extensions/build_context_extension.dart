@@ -24,4 +24,6 @@ extension BuildContextExtension on BuildContext {
   double get bottomViewInsets => mediaQuery.viewInsets.bottom;
 
   Color get surfaceColor => theme.colorScheme.surface;
+
+  Brightness get brightness => theme.brightness;
 }

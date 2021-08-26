@@ -51,6 +51,8 @@ dependencies:
   url_launcher: ^6.0.9
   # UUID
   uuid: ^3.0.4
+  # 视频播放
+  video_player: ^2.1.12
 
   # 上拉加载和下拉刷新
   loading_more_list: ^4.1.0
@@ -73,4 +75,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+    - assets/icons/
     - assets/placeholder/

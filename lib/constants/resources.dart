@@ -3,6 +3,22 @@
 class R {
   const R._();
 
+  static const String ASSETS_ICONS_AGREEMENT_AGREED_SVG =
+      'assets/icons/agreement-agreed.svg';
+
+  static const String ASSETS_ICONS_AGREEMENT_SVG = 'assets/icons/agreement.svg';
+
+  static const String ASSETS_ICONS_CLEAR_INPUT_SVG =
+      'assets/icons/clear-input.svg';
+
+  static const String ASSETS_ICONS_NOT_OBSCURE_SVG =
+      'assets/icons/not-obscure.svg';
+
+  static const String ASSETS_ICONS_OBSCURE_SVG = 'assets/icons/obscure.svg';
+
+  static const String ASSETS_LOGIN_BACKGROUND_VIDEO_MP4 =
+      'assets/login-background-video.mp4';
+
   static const String ASSETS_PLACEHOLDER_COURSE_NOT_READY_SVG =
       'assets/placeholder/course-not-ready.svg';
 

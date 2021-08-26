@@ -5,6 +5,7 @@
 export 'package:hive/hive.dart';
 export 'package:hive_flutter/hive_flutter.dart';
 export 'package:ff_annotation_route_library/ff_annotation_route_library.dart';
+export 'package:flutter_svg/flutter_svg.dart';
 export 'package:permission_handler/permission_handler.dart'
     show Permission, PermissionStatus;
 export 'package:provider/provider.dart';
@@ -17,6 +18,7 @@ export '../apis/api.dart';
 export '../constants/boxes.dart';
 export '../constants/constants.dart';
 export '../constants/instances.dart';
+export '../constants/resources.dart';
 export '../constants/screens.dart';
 export '../constants/styles.dart';
 
@@ -42,6 +44,7 @@ export '../utils/log_util.dart';
 export '../utils/package_util.dart';
 export '../utils/toast_util.dart';
 
+export '../widgets/base_change_notifier.dart';
 export '../widgets/brightness_layer.dart';
 export '../widgets/dialogs/base_action_sheet.dart';
 export '../widgets/dialogs/base_dialog.dart';
