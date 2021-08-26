@@ -92,6 +92,7 @@ class _SearchPageState extends State<SearchPage> {
                 ),
                 child: TextField(
                   controller: _searchTEC,
+                  autofocus: true,
                   decoration: const InputDecoration(
                     isDense: true,
                     hintText: '搜索',
