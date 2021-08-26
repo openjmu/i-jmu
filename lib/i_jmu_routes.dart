@@ -135,7 +135,7 @@ class _JmuWebView {
           String? title = '网页链接',
           bool withCookie = true,
           bool withAction = true,
-          bool withNavigationControls = true,
+          bool withNavigationControls = false,
           bool withScaffold = true,
           bool keepAlive = false}) =>
       <String, dynamic>{

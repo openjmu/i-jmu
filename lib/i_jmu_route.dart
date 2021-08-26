@@ -67,7 +67,7 @@ FFRouteSettings getRouteSettings({
           withCookie: asT<bool>(safeArguments['withCookie'], true)!,
           withAction: asT<bool>(safeArguments['withAction'], true)!,
           withNavigationControls:
-              asT<bool>(safeArguments['withNavigationControls'], true)!,
+              asT<bool>(safeArguments['withNavigationControls'], false)!,
           withScaffold: asT<bool>(safeArguments['withScaffold'], true)!,
           keepAlive: asT<bool>(safeArguments['keepAlive'], false)!,
         ),

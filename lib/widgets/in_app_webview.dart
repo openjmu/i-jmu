@@ -2,7 +2,6 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 1/11/21 7:15 PM
 ///
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -28,7 +27,7 @@ import '../utils/toast_util.dart';
 import 'dialogs/base_dialog.dart';
 import 'fixed_appbar.dart';
 import 'gaps.dart';
-import 'platform_progress_indicator.dart';
+import 'loading/loading_progress_indicator.dart';
 
 @FFRoute(name: 'jmu://web-view', routeName: '网页浏览')
 class InAppWebViewPage extends StatefulWidget {
@@ -38,7 +37,7 @@ class InAppWebViewPage extends StatefulWidget {
     this.title = '网页链接',
     this.withCookie = true,
     this.withAction = true,
-    this.withNavigationControls = true,
+    this.withNavigationControls = false,
     this.withScaffold = true,
     this.keepAlive = false,
   }) : super(key: key);
@@ -58,11 +57,11 @@ class InAppWebViewPage extends StatefulWidget {
     bool withCookie = true,
     bool withAction = true,
     bool withScaffold = true,
-    bool withNavigationControls = true,
+    bool withNavigationControls = false,
     bool keepAlive = false,
   }) {
     Navigator.of(context).pushNamed(
-      'express://web-view',
+      'jmu://web-view',
       arguments: <String, dynamic>{
         'url': url,
         'title': title,
@@ -81,9 +80,7 @@ class InAppWebViewPage extends StatefulWidget {
 
 class _InAppWebViewPageState extends State<InAppWebViewPage>
     with AutomaticKeepAliveClientMixin {
-  final StreamController<double> progressController =
-      StreamController<double>.broadcast();
-  Timer? _progressCancelTimer;
+  final ValueNotifier<bool> _isLoading = ValueNotifier<bool>(false);
 
   late InAppWebView _webView;
   InAppWebViewController? _webViewController;
@@ -118,31 +115,22 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
   }
 
   @override
-  void dispose() {
-    SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
-    progressController.close();
-    super.dispose();
+  void reassemble() {
+    super.reassemble();
+    _webView = newWebView;
   }
 
-  void cancelProgress([Duration duration = const Duration(seconds: 1)]) {
-    _progressCancelTimer?.cancel();
-    _progressCancelTimer = Timer(duration, () {
-      if (progressController.isClosed == false) {
-        progressController.add(0.0);
-      }
-    });
+  @override
+  void dispose() {
+    SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
+    _isLoading.dispose();
+    super.dispose();
   }
 
   /// 检查 scheme 是否可以拉起 App (Android Only) - `shouldOverrideUrlLoading`
   bool checkSchemeLoad(InAppWebViewController controller, String url) {
     // TODO(Alex): iOS 上 url 返回全小写，需要进一步确认。
     final Uri _uri = Uri.parse(url);
-    if (_uri.scheme == _INNER_SCHEME &&
-        _schemeControls.containsKey(_uri.host)) {
-      LogUtil.d('Inner scheme redirecting: $url');
-      _schemeControls[_uri.host]!(context);
-      return true;
-    }
     if (_uri.scheme != 'http' && _uri.scheme != 'https') {
       LogUtil.d('Found scheme when load: $url');
       if (Platform.isAndroid) {
@@ -202,19 +190,6 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
       LogUtil.d('WebView started download from: $url');
       HttpUtil.download(url.toString(), filename);
     }
-  }
-
-  Widget get refreshIndicator {
-    return const Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: SizedBox(
-          width: 24,
-          height: 24,
-          child: PlatformProgressIndicator(strokeWidth: 3),
-        ),
-      ),
-    );
   }
 
   Widget _domainProvider(BuildContext context) {
@@ -331,28 +306,38 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
         ),
       ),
       actions: <Widget>[
-        if (widget.withAction)
-          IconButton(
-            padding: EdgeInsets.zero,
-            icon: const Icon(Icons.more_horiz),
-            onPressed: () => showMore(context),
-          ),
+        if (widget.withAction) _actionBar(context),
       ],
-      bottom: progressBar(context),
     );
   }
 
-  PreferredSize progressBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: Size(Screens.width, 2),
-      child: StreamBuilder<double>(
-        initialData: 0.0,
-        stream: progressController.stream,
-        builder: (_, AsyncSnapshot<double> data) => LinearProgressIndicator(
-          backgroundColor: context.theme.cardColor,
-          value: data.data,
-          minHeight: 2,
+  Widget _actionBar(BuildContext context) {
+    Widget _action(IconData icon, VoidCallback onTap) {
+      return GestureDetector(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Icon(icon, size: 20),
         ),
+      );
+    }
+
+    return Container(
+      margin: const EdgeInsetsDirectional.only(end: 8),
+      decoration: BoxDecoration(
+        borderRadius: RadiusConstants.max,
+        color: context.theme.textTheme.bodyText2?.color?.withOpacity(.1),
+      ),
+      child: Row(
+        children: <Widget>[
+          _action(Icons.more_horiz_outlined, () => showMore(context)),
+          Gap.v(
+            30,
+            width: 1,
+            color: context.theme.canvasColor,
+          ),
+          _action(Icons.adjust_outlined, () => context.navigator.pop()),
+        ],
       ),
     );
   }
@@ -392,6 +377,28 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
             onPressed: () => _webViewController?.reload(),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _loadingIndicator(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: _isLoading,
+      builder: (BuildContext context, bool value, _) => AnimatedCrossFade(
+        duration: kTabScrollDuration,
+        firstChild: const Center(child: LoadingProgressIndicator()),
+        secondChild: const SizedBox.expand(),
+        crossFadeState:
+            value ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+        layoutBuilder: (Widget tw, Key tk, Widget bw, Key bk) {
+          return Stack(
+            clipBehavior: Clip.none,
+            children: <Widget>[
+              Positioned.fill(key: bk, child: bw),
+              Positioned(key: tk, child: tw),
+            ],
+          );
+        },
       ),
     );
   }
@@ -453,9 +460,11 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
       },
       onLoadStart: (_, Uri? url) {
         LogUtil.d('WebView onLoadStart: $url');
+        _isLoading.value = true;
       },
       onLoadStop: (InAppWebViewController controller, Uri? url) async {
         LogUtil.d('WebView onLoadStop: $url');
+        _isLoading.value = false;
         controller.evaluateJavascript(
           source: 'window.onbeforeunload=null',
         );
@@ -474,10 +483,6 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
             title.value = ogTitle;
           }
         }
-        cancelProgress();
-      },
-      onProgressChanged: (_, int progress) {
-        progressController.add(progress / 100);
       },
       onConsoleMessage: (_, ConsoleMessage consoleMessage) {
         LogUtil.d(
@@ -502,10 +507,6 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
           return NavigationActionPolicy.CANCEL;
         }
         return NavigationActionPolicy.ALLOW;
-      },
-      onUpdateVisitedHistory: (_, Uri? url, bool? androidIsReload) {
-        LogUtil.d('WebView onUpdateVisitedHistory: $url, $androidIsReload');
-        cancelProgress();
       },
       androidOnGeolocationPermissionsShowPrompt:
           (InAppWebViewController controller, String origin) async {
@@ -533,7 +534,14 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
         appBar: appBar,
         body: Column(
           children: <Widget>[
-            Expanded(child: _webView),
+            Expanded(
+              child: Stack(
+                children: <Widget>[
+                  Positioned.fill(child: _webView),
+                  _loadingIndicator(context),
+                ],
+              ),
+            ),
             if (widget.withNavigationControls) _footerControls,
           ],
         ),
@@ -541,14 +549,3 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
     );
   }
 }
-
-const String _INNER_SCHEME = 'bwqapps';
-
-final Map<String, Function(BuildContext context)> _schemeControls =
-    <String, Function(BuildContext context)>{
-  'back': (BuildContext c) => Navigator.of(c).pop(),
-  'back-to-home': (BuildContext c) => Navigator.of(c).popUntil(
-        (Route<dynamic> r) =>
-            r.isFirst || r.settings.name == 'express://home-page',
-      ),
-};
