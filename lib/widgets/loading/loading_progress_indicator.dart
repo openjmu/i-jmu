@@ -9,10 +9,12 @@ class LoadingProgressIndicator extends StatelessWidget {
     Key? key,
     this.width = 30,
     this.thickness = 4,
+    this.value,
   }) : super(key: key);
 
   final double width;
   final double thickness;
+  final double? value;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +28,7 @@ class LoadingProgressIndicator extends StatelessWidget {
             Theme.of(context).textTheme.bodyText2?.color,
           ),
           minHeight: thickness,
+          value: value,
         ),
       ),
     );
