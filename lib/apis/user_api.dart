@@ -50,4 +50,17 @@ class UserAPI {
       },
     );
   }
+
+  static void setUP(String u, String p) {
+    Boxes.settingsBox.put(BoxFields.nU, u);
+    Boxes.settingsBox.put(BoxFields.nP, p);
+  }
+
+  static void logout() {
+    navigator.pushNamedAndRemoveUntil(Routes.jmuLoginPage.name, (_) => false);
+    Future<void>.delayed(
+      const Duration(milliseconds: 300),
+      Boxes.settingsBox.clear,
+    );
+  }
 }

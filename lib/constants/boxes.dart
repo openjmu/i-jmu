@@ -53,8 +53,11 @@ class BoxTypeIds {
 class BoxFields {
   const BoxFields._();
 
+  static const String nU = 'u';
+  static const String nP = 'p';
   static const String nToken = 'token';
   static const String nUUID = 'uuid';
+
   static const String nMainSystemConfig = 'main-system-config';
   static const String nMainBannerConfig = 'main-banner-config';
 }

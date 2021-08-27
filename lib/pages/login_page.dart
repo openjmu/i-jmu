@@ -197,6 +197,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
         _pTec.text,
       );
       if (res.isSucceed) {
+        UserAPI.setUP(_uTec.text, _pTec.text);
         UserAPI.token = res.data!.idToken;
         await videoController.setLooping(false);
         await videoController.pause();
