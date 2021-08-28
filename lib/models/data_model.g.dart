@@ -575,6 +575,31 @@ Map<String, dynamic> _$BannerModelToJson(BannerModel instance) =>
       'sort': instance.sort,
     };
 
+CourseModel _$CourseModelFromJson(Map<String, dynamic> json) {
+  return CourseModel(
+    name: json['couName'] as String? ?? '(空)',
+    time: CourseModel._dTimeFromDynamic(json['couTime']),
+    day: CourseModel._dDayFromDynamic(json['couDayTime']),
+    $allWeek: json['allWeek'] as String,
+    teacher: json['couTeaName'] as String?,
+    location: json['couRom'] as String?,
+    classTogether: CourseModel._dClassesFromDynamic(json['comboClassName']),
+    isEleven: CourseModel._dIsElevenFromString(json['three'] as String),
+  );
+}
+
+Map<String, dynamic> _$CourseModelToJson(CourseModel instance) =>
+    <String, dynamic>{
+      'couName': instance.name,
+      'couTime': instance.time,
+      'couDayTime': instance.day,
+      'allWeek': instance.$allWeek,
+      'couTeaName': instance.teacher,
+      'couRom': instance.location,
+      'comboClassName': instance.classTogether,
+      'three': instance.isEleven,
+    };
+
 SearchResult _$SearchResultFromJson(Map<String, dynamic> json) {
   return SearchResult(
     total: json['totalHits'] as int? ?? 0,

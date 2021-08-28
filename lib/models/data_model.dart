@@ -2,8 +2,11 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 11/26/20 4:31 PM
 ///
-import 'package:flutter/widgets.dart';
+import 'dart:math' as math;
+
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -14,6 +17,8 @@ import '../extensions/object_extension.dart';
 import '../utils/log_util.dart';
 
 part 'banner_config_model.dart';
+
+part 'course_model.dart';
 
 part 'data_model.d.dart';
 
@@ -77,3 +82,7 @@ class EmptyDataModel extends DataModel {
   @override
   List<Object?> get props => <Object?>[null];
 }
+
+final math.Random _random = math.Random();
+
+int next(int min, int max) => min + _random.nextInt(max - min);
