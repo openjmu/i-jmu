@@ -87,7 +87,8 @@ class SlideViewState<T> extends State<SliderView<T>>
   /// 轮播图使用的控制器
   late final PageController _pageController = PageController(
     // 初始值是 Model 个数的倍数，即从第一张开始。
-    initialPage: _A_LARGE_NUMBER * widget.models.length,
+    initialPage:
+        widget.models.length == 1 ? 0 : _A_LARGE_NUMBER * widget.models.length,
   )..addListener(() {
       if (_pageController.hasClients) {
         _pageNotifier.value = _pageController.page ?? 0;
