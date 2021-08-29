@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 import 'package:device_info/device_info.dart';
-import 'package:i_jmu/constants/boxes.dart';
+import 'package:i_jmu/internal/boxes.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';

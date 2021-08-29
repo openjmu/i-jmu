@@ -3,7 +3,7 @@
 /// [Date] 2021/8/25 14:25
 ///
 import 'package:flutter/material.dart';
-import 'package:i_jmu/constants/exports.dart';
+import 'package:i_jmu/exports.dart';
 
 @FFRoute(name: 'jmu://search-page', routeName: '搜索页')
 class SearchPage extends StatefulWidget {

@@ -5,7 +5,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:i_jmu/constants/instances.dart';
+import 'package:i_jmu/internal/instances.dart';
 import 'package:i_jmu/constants/styles.dart';
 import 'package:i_jmu/extensions/build_context_extension.dart';
 import 'package:i_jmu/utils/log_util.dart';

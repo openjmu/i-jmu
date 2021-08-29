@@ -3,7 +3,7 @@
 /// [Date] 2021/8/24 14:24
 ///
 import 'package:flutter/material.dart';
-import 'package:i_jmu/constants/exports.dart';
+import 'package:i_jmu/exports.dart';
 
 @FFRoute(name: 'jmu://splash-page', routeName: '闪屏页')
 class SplashPage extends StatefulWidget {
@@ -22,7 +22,9 @@ class _SplashPageState extends State<SplashPage> {
         return;
       }
       navigator.pushNamedAndRemoveUntil(
-        UserAPI.isLogon ? Routes.jmuMainPage.name : Routes.jmuLoginPage.name,
+        Authenticator.hasLogin
+            ? Routes.jmuMainPage.name
+            : Routes.jmuLoginPage.name,
         (Route<dynamic> r) => false,
       );
     });

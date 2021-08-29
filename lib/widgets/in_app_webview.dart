@@ -13,12 +13,13 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../apis/api.dart';
+import '../authenticators/authenticator.dart';
 import '../constants/constants.dart';
-import '../constants/screens.dart';
 import '../constants/styles.dart';
 import '../extensions/build_context_extension.dart';
 import '../extensions/state_extension.dart';
+import '../internal/manager.dart';
+import '../internal/screens.dart';
 import '../utils/http_util.dart';
 import '../utils/log_util.dart';
 import '../utils/other_utils.dart';
@@ -409,8 +410,8 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
       initialUrlRequest: URLRequest(
         url: Uri.parse(url),
         headers: <String, String>{
-          if (UserAPI.isLogon) 'userToken': UserAPI.token!,
-          if (UserAPI.isLogon) 'X-Id-Token': UserAPI.token!,
+          if (CASAuthenticator().logonPredicate()) 'userToken': User.token!,
+          if (CASAuthenticator().logonPredicate()) 'X-Id-Token': User.token!,
           'X-Requested-With': PackageUtil.packageInfo.packageName,
         },
       ),

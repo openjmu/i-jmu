@@ -6,8 +6,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../constants/screens.dart';
 import '../../constants/styles.dart';
+import '../../internal/screens.dart';
 import '../dismiss_wrapper.dart';
 
 class ConfirmationBottomSheet extends StatefulWidget {

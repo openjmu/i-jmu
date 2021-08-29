@@ -113,7 +113,7 @@ class SystemConfigECard extends DataModel {
     if (requestUrl == null) {
       return null;
     }
-    return requestUrl!.replaceAll('{idToken}', UserAPI.token!);
+    return requestUrl!.replaceAll('{idToken}', User.token!);
   }
 
   @override

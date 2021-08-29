@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 
-import 'constants/exports.dart';
+import 'exports.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +14,8 @@ Future<void> main() async {
     ],
     eagerError: true,
   );
-  UserAPI.recoverToken();
+  User.recoverToken();
+  Authenticator.authenticators..add(CASAuthenticator())..add(NDAuthenticator());
   runApp(const IJMUApp());
 }
 

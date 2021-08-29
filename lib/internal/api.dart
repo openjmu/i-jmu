@@ -1,8 +1,13 @@
 ///
 /// [Author] Alex (https://github.com/AlexV525)
-/// [Date] 2021/8/23 18:38
+/// [Date] 2021/8/23 14:09
 ///
-part of 'api.dart';
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
+import 'package:i_jmu/exports.dart';
+
+import 'urls.dart';
 
 class PortalAPI {
   const PortalAPI._();
@@ -23,7 +28,7 @@ class PortalAPI {
   }) {
     return HttpUtil.fetchModel(
       FetchType.get,
-      url: API.search,
+      url: Urls.search,
       queryParameters: <String, String>{
         'keyWord': keyword,
         'keyWordType': keywordType.toString(),
@@ -41,7 +46,7 @@ class PortalAPI {
   }) {
     return HttpUtil.fetchModel(
       FetchType.get,
-      url: API.bannerConfig,
+      url: Urls.bannerConfig,
       queryParameters: <String, String>{
         if (type != null) 'marTypeCode': type,
       },
@@ -49,13 +54,42 @@ class PortalAPI {
   }
 
   static Future<ResponseModel<SystemConfig>> systemConfig() {
-    return HttpUtil.fetchModel(FetchType.get, url: API.appSystemConfigurations);
+    return HttpUtil.fetchModel(
+      FetchType.get,
+      url: Urls.appSystemConfigurations,
+    );
   }
 
   static Future<ResponseModel<ServiceModel>> servicesForceRecommended() {
     return HttpUtil.fetchModels(
       FetchType.get,
-      url: API.servicesForceRecommended,
+      url: Urls.servicesForceRecommended,
     );
+  }
+}
+
+class UserAPI {
+  const UserAPI._();
+
+  static Future<ResponseModel<TokenModel>> casLogin(String u, String p) {
+    return HttpUtil.fetchModel(
+      FetchType.post,
+      url: Urls.casLogin,
+      queryParameters: <String, String>{
+        'appId': PackageUtil.packageInfo.packageName,
+        'clientId': md5.convert(utf8.encode(DeviceUtil.deviceUuid)).toString(),
+        'deviceId': base64.encode(utf8.encode(DeviceUtil.deviceModel)),
+        'username': u,
+        'password': p,
+      },
+    );
+  }
+
+  static Future<Map<String, dynamic>> ndLogin(Map<String, dynamic> params) {
+    return HttpUtil.fetch(FetchType.post, url: Urls.ndLogin, body: params);
+  }
+
+  static Future<Map<String, dynamic>> ndTicket(Map<String, dynamic> params) {
+    return HttpUtil.fetch(FetchType.post, url: Urls.ndTicket, body: params);
   }
 }

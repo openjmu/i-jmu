@@ -4,7 +4,7 @@
 ///
 @FFArgumentImport()
 import 'package:flutter/material.dart';
-import 'package:i_jmu/constants/exports.dart';
+import 'package:i_jmu/exports.dart';
 
 class MainPageNotifier extends ChangeNotifier {
   MainPageNotifier() {

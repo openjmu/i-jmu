@@ -7,7 +7,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-import '../constants/screens.dart';
+import '../internal/screens.dart';
 
 class DismissWrapper extends StatefulWidget {
   const DismissWrapper({

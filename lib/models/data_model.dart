@@ -10,10 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../apis/api.dart';
-import '../constants/boxes.dart';
 import '../constants/constants.dart';
 import '../extensions/object_extension.dart';
+import '../internal/boxes.dart';
+import '../internal/manager.dart';
 import '../utils/log_util.dart';
 
 part 'banner_config_model.dart';

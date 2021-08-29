@@ -10,8 +10,8 @@ import 'package:pull_to_refresh_notification/pull_to_refresh_notification.dart'
     hide CupertinoActivityIndicator;
 
 import '../../constants/resources.dart';
-import '../../constants/screens.dart';
 import '../../extensions/build_context_extension.dart';
+import '../../internal/screens.dart';
 import '../../models/data_model.dart';
 import '../../models/loading_base.dart';
 import '../gaps.dart';

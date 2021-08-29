@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 
-import 'package:i_jmu/constants/exports.dart';
+import 'package:i_jmu/exports.dart';
 
 class LoginNotifier extends BaseChangeNotifier {
   String get username => _username;
@@ -192,13 +192,11 @@ class LoginPageState extends State<LoginPage> with RouteAware {
     }
     try {
       notifier.isLoading = true;
-      final ResponseModel<TokenModel> res = await UserAPI.login(
+      final List<bool> status = await Authenticator.loginAll(
         _uTec.text,
         _pTec.text,
       );
-      if (res.isSucceed) {
-        UserAPI.setUP(_uTec.text, _pTec.text);
-        UserAPI.token = res.data!.idToken;
+      if (status.every((bool v) => v)) {
         await videoController.setLooping(false);
         await videoController.pause();
         navigator.pushNamedAndRemoveUntil(
@@ -627,7 +625,7 @@ class _InputFieldWrapper extends StatelessWidget {
               children: <Widget>[
                 Text(
                   title,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: context.textTheme.caption?.copyWith(fontSize: 16),
                 ),
                 Row(
                   children: <Widget>[

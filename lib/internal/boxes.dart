@@ -56,6 +56,9 @@ class BoxFields {
   static const String nU = 'u';
   static const String nP = 'p';
   static const String nToken = 'token';
+  static const String nTicket = 'ticket';
+  static const String nSession = 'session';
+  static const String nBlowfish = 'blowfish';
   static const String nUUID = 'uuid';
 
   static const String nMainSystemConfig = 'main-system-config';

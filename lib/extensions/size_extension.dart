@@ -4,7 +4,7 @@
 ///
 // import 'package:flutter_screenutil/flutter_screenutil.dart' hide SizeExtension;
 
-import '../constants/screens.dart';
+import '../internal/screens.dart';
 
 /// dp => px
 extension DP2PXExtension on double {

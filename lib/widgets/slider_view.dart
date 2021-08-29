@@ -3,7 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../constants/instances.dart';
+import '../internal/instances.dart';
 import 'loading/loading_progress_indicator.dart';
 
 /// 轮播图组件

@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as web_view;
@@ -13,9 +14,9 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../apis/api.dart';
 import '../constants/constants.dart';
 import '../extensions/object_extension.dart';
+import '../internal/manager.dart';
 import '../models/data_model.dart';
 import '../models/response_model.dart';
 
@@ -30,26 +31,23 @@ enum FetchType { head, get, post, put, patch, delete }
 class HttpUtil {
   const HttpUtil._();
 
-  static final Dio dio = Dio()
-    ..options = BaseOptions(
-      connectTimeout: kReleaseMode ? 15000 : null,
-      sendTimeout: kReleaseMode ? 30000 : null,
-      receiveTimeout: kReleaseMode ? 15000 : null,
-      receiveDataWhenStatusError: true,
-    )
-    ..interceptors.add(_interceptor);
+  static late final Dio dio = _createDio();
   static final web_view.CookieManager webViewCookieManager =
       web_view.CookieManager.instance();
 
-  static ResponseModel<T> _successModel<T extends DataModel>() =>
-      ResponseModel<T>(code: 1, message: '', timestamp: currentTimeStamp);
-
-  static ResponseModel<T> _failModel<T extends DataModel>(String message) =>
-      ResponseModel<T>(
-        code: 0,
-        message: '_InternalRequestError: $message',
-        timestamp: currentTimeStamp,
-      );
+  static Dio _createDio() {
+    final Dio _dio = Dio()
+      ..options = BaseOptions(
+        connectTimeout: kReleaseMode ? 15000 : null,
+        sendTimeout: kReleaseMode ? 30000 : null,
+        receiveTimeout: kReleaseMode ? 15000 : null,
+        receiveDataWhenStatusError: true,
+      )
+      ..interceptors.add(_interceptor);
+    (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        _clientCreate;
+    return _dio;
+  }
 
   static Future<T> fetch<T>(
     FetchType fetchType, {
@@ -251,8 +249,8 @@ class HttpUtil {
   }) async {
     final Response<T> response;
     headers ??= <String, String?>{};
-    if (UserAPI.token != null) {
-      headers['X-Id-Token'] = UserAPI.token;
+    if (User.token != null) {
+      headers['X-Id-Token'] = User.token;
     }
     String? _userAgent;
     if (Platform.isAndroid) {
@@ -437,4 +435,20 @@ class HttpUtil {
       },
     );
   }
+
+  static dynamic Function(HttpClient client) get _clientCreate {
+    return (HttpClient client) {
+      client.badCertificateCallback = (_, __, ___) => true;
+    };
+  }
+
+  static ResponseModel<T> _successModel<T extends DataModel>() =>
+      ResponseModel<T>(code: 1, message: '', timestamp: currentTimeStamp);
+
+  static ResponseModel<T> _failModel<T extends DataModel>(String message) =>
+      ResponseModel<T>(
+        code: 0,
+        message: '_InternalRequestError: $message',
+        timestamp: currentTimeStamp,
+      );
 }
