@@ -93,3 +93,25 @@ class UserAPI {
     return HttpUtil.fetch(FetchType.post, url: Urls.ndTicket, body: params);
   }
 }
+
+class CourseAPI {
+  const CourseAPI._();
+
+  static Future<String> getCourse({bool useVPN = false}) {
+    return HttpUtil.fetch(
+      FetchType.get,
+      url: useVPN ? Urls.replaceWithWebVPN(Urls.courses) : Urls.courses,
+      queryParameters: <String, String>{'sid': User.session!},
+    );
+  }
+
+  static Future<String> getRemark({bool useVPN = false}) {
+    return HttpUtil.fetch(
+      FetchType.get,
+      url: useVPN
+          ? Urls.replaceWithWebVPN(Urls.courseRemark)
+          : Urls.courseRemark,
+      queryParameters: <String, String>{'sid': User.session!},
+    );
+  }
+}

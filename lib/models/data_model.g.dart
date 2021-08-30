@@ -182,6 +182,61 @@ class BannerModelAdapter extends TypeAdapter<BannerModel> {
           typeId == other.typeId;
 }
 
+class CourseModelAdapter extends TypeAdapter<CourseModel> {
+  @override
+  final int typeId = 5;
+
+  @override
+  CourseModel read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return CourseModel(
+      name: fields[0] as String,
+      time: fields[1] as String,
+      day: fields[2] as int,
+      $allWeek: fields[3] as String,
+      teacher: fields[4] as String?,
+      location: fields[5] as String?,
+      classTogether: (fields[6] as List).cast<String>(),
+      isEleven: fields[7] as bool,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, CourseModel obj) {
+    writer
+      ..writeByte(8)
+      ..writeByte(0)
+      ..write(obj.name)
+      ..writeByte(1)
+      ..write(obj.time)
+      ..writeByte(2)
+      ..write(obj.day)
+      ..writeByte(3)
+      ..write(obj.$allWeek)
+      ..writeByte(4)
+      ..write(obj.teacher)
+      ..writeByte(5)
+      ..write(obj.location)
+      ..writeByte(6)
+      ..write(obj.classTogether)
+      ..writeByte(7)
+      ..write(obj.isEleven);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CourseModelAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
 class ServiceModelAdapter extends TypeAdapter<ServiceModel> {
   @override
   final int typeId = 4;
