@@ -12,7 +12,7 @@ class CASAuthenticator extends Authenticator {
   static late final CASAuthenticator _instance = CASAuthenticator._();
 
   @override
-  bool logonPredicate() => Boxes.settingsBox.get(BoxFields.nToken) is String;
+  bool logonPredicate() => Boxes.containerBox.get(BoxFields.nToken) is String;
 
   @override
   Future<bool> login(String u, String p) async {
@@ -23,7 +23,7 @@ class CASAuthenticator extends Authenticator {
         return false;
       }
       User.token = token;
-      Boxes.settingsBox.put(BoxFields.nToken, token);
+      Boxes.containerBox.put(BoxFields.nToken, token);
       HttpUtil.webViewCookieManager.setCookie(
         url: Uri(scheme: 'https', host: Urls.JMU_DOMAIN),
         name: 'userToken',
@@ -41,6 +41,6 @@ class CASAuthenticator extends Authenticator {
 
   @override
   Future<void> logout() async {
-    await Boxes.settingsBox.delete(BoxFields.nToken);
+    await Boxes.containerBox.delete(BoxFields.nToken);
   }
 }

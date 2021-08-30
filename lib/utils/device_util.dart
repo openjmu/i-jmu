@@ -49,10 +49,10 @@ class DeviceUtil {
   }
 
   static void getUuid() {
-    final String? _prevUuid = Boxes.settingsBox.get(BoxFields.nUUID) as String?;
+    final String? _prevUuid = Boxes.containerBox.get(BoxFields.nUUID) as String?;
     if (_prevUuid == null) {
       final String newUuid = const Uuid().v5(Uuid.NAMESPACE_OID, deviceModel);
-      Boxes.settingsBox.put(BoxFields.nUUID, newUuid);
+      Boxes.containerBox.put(BoxFields.nUUID, newUuid);
       deviceUuid = newUuid;
     } else {
       deviceUuid = _prevUuid;

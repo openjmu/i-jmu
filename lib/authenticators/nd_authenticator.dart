@@ -13,9 +13,9 @@ class NDAuthenticator extends Authenticator {
 
   @override
   bool logonPredicate() =>
-      Boxes.settingsBox.get(BoxFields.nTicket) is String ||
-      Boxes.settingsBox.get(BoxFields.nSession) is String ||
-      Boxes.settingsBox.get(BoxFields.nBlowfish) is String;
+      Boxes.containerBox.get(BoxFields.nTicket) is String ||
+      Boxes.containerBox.get(BoxFields.nSession) is String ||
+      Boxes.containerBox.get(BoxFields.nBlowfish) is String;
 
   @override
   Future<bool> login(String u, String p) async {
@@ -28,11 +28,11 @@ class NDAuthenticator extends Authenticator {
     try {
       final Map<String, dynamic> res = await UserAPI.ndLogin(params);
       User.blowfish = blowfish;
-      Boxes.settingsBox.put(BoxFields.nBlowfish, blowfish);
+      Boxes.containerBox.put(BoxFields.nBlowfish, blowfish);
       User.session = res['sid'] as String;
-      Boxes.settingsBox.put(BoxFields.nSession, res['sid'] as String);
+      Boxes.containerBox.put(BoxFields.nSession, res['sid'] as String);
       User.ticket = res['ticket'] as String;
-      Boxes.settingsBox.put(BoxFields.nTicket, res['ticket'] as String);
+      Boxes.containerBox.put(BoxFields.nTicket, res['ticket'] as String);
       return true;
     } catch (e) {
       LogUtil.e('Error when login with NDAuthenticator: $e');
@@ -42,18 +42,18 @@ class NDAuthenticator extends Authenticator {
 
   @override
   Future<bool> reAuth([bool logoutWhenFailed = true]) async {
-    if (Boxes.settingsBox.get(BoxFields.nBlowfish) is! String ||
-        Boxes.settingsBox.get(BoxFields.nTicket) is! String) {
+    if (Boxes.containerBox.get(BoxFields.nBlowfish) is! String ||
+        Boxes.containerBox.get(BoxFields.nTicket) is! String) {
       return false;
     }
     final Map<String, dynamic> params = _loginParams(
-      blowfish: Boxes.settingsBox.get(BoxFields.nBlowfish) as String,
-      ticket: Boxes.settingsBox.get(BoxFields.nTicket) as String,
+      blowfish: Boxes.containerBox.get(BoxFields.nBlowfish) as String,
+      ticket: Boxes.containerBox.get(BoxFields.nTicket) as String,
     );
     try {
       final Map<String, dynamic> res = await UserAPI.ndTicket(params);
       User.session = res['sid'] as String;
-      Boxes.settingsBox.put(BoxFields.nSession, res['sid'] as String);
+      Boxes.containerBox.put(BoxFields.nSession, res['sid'] as String);
       return true;
     } catch (e) {
       LogUtil.e('Error when fetching ticket with NDAuthenticator: $e');
@@ -63,9 +63,9 @@ class NDAuthenticator extends Authenticator {
 
   @override
   Future<void> logout() async {
-    Boxes.settingsBox.delete(BoxFields.nBlowfish);
-    Boxes.settingsBox.delete(BoxFields.nTicket);
-    Boxes.settingsBox.delete(BoxFields.nSession);
+    Boxes.containerBox.delete(BoxFields.nBlowfish);
+    Boxes.containerBox.delete(BoxFields.nTicket);
+    Boxes.containerBox.delete(BoxFields.nSession);
   }
 
   Map<String, dynamic> _loginParams({

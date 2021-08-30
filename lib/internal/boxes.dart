@@ -10,8 +10,14 @@ import '../models/data_model.dart';
 class Boxes {
   const Boxes._();
 
+  /// 通用网络数据缓存
   static late final Box<DataModel?> dataCachesBox;
-  static late final Box<Object?> settingsBox;
+
+  /// 课程缓存
+  static late final Box<CourseModel> coursesBox;
+
+  /// 什么都装
+  static late final Box<Object?> containerBox;
 
   static Future<void> openBoxes() async {
     Hive
@@ -19,13 +25,14 @@ class Boxes {
       ..registerAdapter(SystemConfigECardAdapter())
       ..registerAdapter(BannerConfigAdapter())
       ..registerAdapter(BannerModelAdapter())
-      ..registerAdapter(ServiceModelAdapter());
+      ..registerAdapter(ServiceModelAdapter())
+      ..registerAdapter(CourseModelAdapter());
     await Future.wait(
       <Future<void>>[
+        (() async => containerBox = await Hive.openBox(_BoxNames._settings))(),
         (() async =>
             dataCachesBox = await Hive.openBox(_BoxNames._dataCaches))(),
-        (() async =>
-            settingsBox = await Hive.openBox(_BoxNames._settings))(),
+        (() async => coursesBox = await Hive.openBox(_BoxNames._courses))(),
       ],
       eagerError: true,
     );
@@ -36,8 +43,9 @@ class _BoxNames {
   const _BoxNames._();
 
   static const String _prefix = 'i-jmu';
-  static const String _dataCaches = '$_prefix-data-caches';
   static const String _settings = '$_prefix-settings';
+  static const String _dataCaches = '$_prefix-data-caches';
+  static const String _courses = '$_prefix-courses';
 }
 
 class BoxTypeIds {
@@ -48,6 +56,7 @@ class BoxTypeIds {
   static const int bannerConfig = 2;
   static const int bannerModel = 3;
   static const int serviceModel = 4;
+  static const int courseModel = 5;
 }
 
 class BoxFields {
@@ -60,6 +69,8 @@ class BoxFields {
   static const String nSession = 'session';
   static const String nBlowfish = 'blowfish';
   static const String nUUID = 'uuid';
+  static const String nStartDate = 'startDate';
+  static const String nCourseRemark = 'courseRemark';
 
   static const String nMainSystemConfig = 'main-system-config';
   static const String nMainBannerConfig = 'main-banner-config';

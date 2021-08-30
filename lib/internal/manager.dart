@@ -17,7 +17,7 @@ class User {
   static String? ticket;
 
   static void recoverToken() {
-    token = Boxes.settingsBox.get(BoxFields.nToken) as String?;
+    token = Boxes.containerBox.get(BoxFields.nToken) as String?;
     if (token != null) {
       HttpUtil.webViewCookieManager.setCookie(
         url: Uri(scheme: 'https', host: 'jmu.edu.cn'),
@@ -28,15 +28,15 @@ class User {
   }
 
   static void setUP(String u, String p) {
-    Boxes.settingsBox.put(BoxFields.nU, u);
-    Boxes.settingsBox.put(BoxFields.nP, p);
+    Boxes.containerBox.put(BoxFields.nU, u);
+    Boxes.containerBox.put(BoxFields.nP, p);
   }
 
   static void logout() {
     navigator.pushNamedAndRemoveUntil(Routes.jmuLoginPage.name, (_) => false);
     Future<void>.delayed(
       const Duration(milliseconds: 300),
-      Boxes.settingsBox.clear,
+      Boxes.containerBox.clear,
     );
   }
 }
