@@ -5,9 +5,11 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:device_info/device_info.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as web_view;
 import 'package:open_file/open_file.dart';
@@ -17,6 +19,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../constants/constants.dart';
 import '../extensions/object_extension.dart';
 import '../internal/manager.dart';
+import '../internal/urls.dart';
 import '../models/data_model.dart';
 import '../models/response_model.dart';
 
@@ -32,8 +35,6 @@ class HttpUtil {
   const HttpUtil._();
 
   static late final Dio dio = _createDio();
-  static final web_view.CookieManager webViewCookieManager =
-      web_view.CookieManager.instance();
 
   static Dio _createDio() {
     final Dio _dio = Dio()
@@ -49,13 +50,52 @@ class HttpUtil {
     return _dio;
   }
 
+  static late final PersistCookieJar cookieJar;
+  static late final PersistCookieJar tokenCookieJar;
+  static late final CookieManager cookieManager;
+  static late final CookieManager tokenCookieManager;
+  static final web_view.CookieManager webViewCookieManager =
+      web_view.CookieManager.instance();
+
+  static late final Directory _tempDir;
+  static late bool shouldUseWebVPN;
+
+  static Future<void> initConfig() async {
+    await initCookieManagement();
+    dio.interceptors..add(_interceptor)..add(cookieManager);
+    await testClassKit();
+  }
+
+  static Future<void> initCookieManagement() async {
+    _tempDir = await getTemporaryDirectory();
+    // Initialize cookie jars.
+    if (!Directory('${_tempDir.path}/cookie_jar').existsSync()) {
+      Directory('${_tempDir.path}/cookie_jar').createSync();
+    }
+    if (!Directory('${_tempDir.path}/token_cookie_jar').existsSync()) {
+      Directory('${_tempDir.path}/token_cookie_jar').createSync();
+    }
+    if (!Directory('${_tempDir.path}/web_view_cookie_jar').existsSync()) {
+      Directory('${_tempDir.path}/web_view_cookie_jar').createSync();
+    }
+    cookieJar = PersistCookieJar(
+      storage: FileStorage('${_tempDir.path}/cookie_jar'),
+    );
+    tokenCookieJar = PersistCookieJar(
+      storage: FileStorage('${_tempDir.path}/token_cookie_jar'),
+    );
+    cookieManager = CookieManager(cookieJar);
+    tokenCookieManager = CookieManager(tokenCookieJar);
+  }
+
   static Future<T> fetch<T>(
     FetchType fetchType, {
     required String url,
     Map<String, String>? queryParameters,
     dynamic body,
     Map<String, dynamic>? headers,
-    ResponseType? responseType,
+    String? contentType,
+    ResponseType responseType = ResponseType.json,
   }) async {
     final Response<T> response = await getResponse(
       fetchType,
@@ -63,6 +103,7 @@ class HttpUtil {
       queryParameters: queryParameters,
       body: body,
       headers: headers,
+      contentType: contentType,
       responseType: responseType,
     );
     return response.data!;
@@ -245,7 +286,8 @@ class HttpUtil {
     Map<String, String?>? queryParameters,
     dynamic body,
     Map<String, dynamic>? headers,
-    ResponseType? responseType = ResponseType.json,
+    String? contentType,
+    ResponseType responseType = ResponseType.json,
   }) async {
     final Response<T> response;
     headers ??= <String, String?>{};
@@ -434,6 +476,27 @@ class HttpUtil {
         handler.reject(e);
       },
     );
+  }
+
+  /// 通过测试「课堂助理」应用，判断是否需要使用 WebVPN。
+  static Future<void> testClassKit() async {
+    try {
+      await fetch<String>(
+        FetchType.get,
+        url: Urls.classKitHost,
+        contentType: 'text/html;charset=utf-8',
+      );
+      shouldUseWebVPN = false;
+    } on DioError catch (dioError) {
+      if (dioError.response?.statusCode == HttpStatus.forbidden) {
+        shouldUseWebVPN = true;
+        return;
+      }
+      shouldUseWebVPN = false;
+    } catch (e) {
+      LogUtil.e('Error when testing classKit: $e');
+      shouldUseWebVPN = false;
+    }
   }
 
   static dynamic Function(HttpClient client) get _clientCreate {

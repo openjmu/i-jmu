@@ -19,12 +19,16 @@ dependencies:
   android_intent_plus: ^2.0.0
   # Android Scheme 获取 App 名称
   android_scheme_search: ^1.0.0
+  # Dio Cookie 容器
+  cookie_jar: ^3.0.0
   # 加密
   crypto: ^3.0.1
   # 设备信息
   device_info: ^2.0.2
   # 网络请求
   dio: ^4.0.0
+  # Dio Cookie 管理
+  dio_cookie_manager: ^2.0.0
   # 快速实现对象比较
   equatable: ^2.0.3
   # 注解路由的注解库
