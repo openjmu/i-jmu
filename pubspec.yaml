@@ -18,7 +18,7 @@ dependencies:
   # Android Intent
   android_intent_plus: ^2.0.0
   # Android Scheme 获取 App 名称
-  android_scheme_search: ^1.0.0
+  android_scheme_search: ^1.0.1
   # Dio Cookie 容器
   cookie_jar: ^3.0.0
   # 加密
