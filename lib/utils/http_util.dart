@@ -18,8 +18,8 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../constants/constants.dart';
 import '../extensions/object_extension.dart';
-import '../internal/manager.dart';
 import '../internal/urls.dart';
+import '../internal/user.dart';
 import '../models/data_model.dart';
 import '../models/response_model.dart';
 
@@ -291,8 +291,8 @@ class HttpUtil {
   }) async {
     final Response<T> response;
     headers ??= <String, String?>{};
-    if (User.token != null) {
-      headers['X-Id-Token'] = User.token;
+    if (User.casToken != null) {
+      headers['X-Id-Token'] = User.casToken;
     }
     String? _userAgent;
     if (Platform.isAndroid) {
@@ -440,31 +440,7 @@ class HttpUtil {
       onError: (
         DioError e,
         ErrorInterceptorHandler handler,
-      ) async {
-        if (e.response?.statusCode == HttpStatus.unauthorized) {
-          // Lock & Clear all queries with the dio instance.
-          dio
-            ..lock()
-            ..clear();
-          dio.interceptors.requestLock
-            ..lock()
-            ..clear();
-          dio.interceptors.responseLock
-            ..lock()
-            ..clear();
-          dio.interceptors.errorLock
-            ..lock()
-            ..clear();
-          // Unlock all instances after token has removed.
-          dio.unlock();
-          dio.interceptors.requestLock.unlock();
-          dio.interceptors.responseLock.unlock();
-          dio.interceptors.errorLock.unlock();
-          // Then start from the splash page.
-          // Eject the response eventually.
-          handler.reject(e);
-          return;
-        }
+      ) {
         LogUtil.e(
           'Error when requesting: $e\n'
           'Raw response data: ${e.response?.data}',
@@ -473,7 +449,7 @@ class HttpUtil {
           requestOptions: e.requestOptions,
           data: _failModel(e.message).toJson(),
         );
-        handler.reject(e);
+        handler.next(e);
       },
     );
   }
@@ -496,6 +472,31 @@ class HttpUtil {
     } catch (e) {
       LogUtil.e('Error when testing classKit: $e');
       shouldUseWebVPN = false;
+    }
+  }
+
+  static Future<void> updateDomainsCookies(
+    List<String> urls, [
+    List<Cookie>? cookies,
+  ]) async {
+    final List<Cookie> _cookies = cookies ?? User.buildNDCookies();
+    for (final String url in urls) {
+      final String httpUrl = url.replaceAll(
+        RegExp(r'http(s)?://'),
+        'http://',
+      );
+      final String httpsUrl = url.replaceAll(
+        RegExp(r'http(s)?://'),
+        'https://',
+      );
+      await Future.wait<void>(
+        <Future<void>>[
+          cookieJar.saveFromResponse(Uri.parse('$httpUrl/'), _cookies),
+          tokenCookieJar.saveFromResponse(Uri.parse('$httpUrl/'), _cookies),
+          cookieJar.saveFromResponse(Uri.parse('$httpsUrl/'), _cookies),
+          tokenCookieJar.saveFromResponse(Uri.parse('$httpsUrl/'), _cookies),
+        ],
+      );
     }
   }
 

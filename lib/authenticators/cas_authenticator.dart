@@ -22,7 +22,7 @@ class CASAuthenticator extends Authenticator {
       if (token == null) {
         return false;
       }
-      User.token = token;
+      User.casToken = token;
       Boxes.containerBox.put(BoxFields.nToken, token);
       HttpUtil.webViewCookieManager.setCookie(
         url: Uri(scheme: 'https', host: Urls.JMU_DOMAIN),

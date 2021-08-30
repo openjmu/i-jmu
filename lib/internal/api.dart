@@ -92,6 +92,14 @@ class UserAPI {
   static Future<Map<String, dynamic>> ndTicket(Map<String, dynamic> params) {
     return HttpUtil.fetch(FetchType.post, url: Urls.ndTicket, body: params);
   }
+
+  static Future<Map<String, dynamic>> ndUserInfo() {
+    return HttpUtil.fetch(
+      FetchType.get,
+      url: Urls.ndUserInfo,
+      queryParameters: <String, String>{'uid': User.ndUserId!},
+    );
+  }
 }
 
 class CourseAPI {
@@ -101,7 +109,7 @@ class CourseAPI {
     return HttpUtil.fetch(
       FetchType.get,
       url: useVPN ? Urls.replaceWithWebVPN(Urls.courses) : Urls.courses,
-      queryParameters: <String, String>{'sid': User.session!},
+      queryParameters: <String, String>{'sid': User.ndSession!},
     );
   }
 
@@ -111,7 +119,7 @@ class CourseAPI {
       url: useVPN
           ? Urls.replaceWithWebVPN(Urls.courseRemark)
           : Urls.courseRemark,
-      queryParameters: <String, String>{'sid': User.session!},
+      queryParameters: <String, String>{'sid': User.ndSession!},
     );
   }
 }

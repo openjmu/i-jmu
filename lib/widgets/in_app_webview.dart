@@ -18,8 +18,8 @@ import '../constants/constants.dart';
 import '../constants/styles.dart';
 import '../extensions/build_context_extension.dart';
 import '../extensions/state_extension.dart';
-import '../internal/manager.dart';
 import '../internal/screens.dart';
+import '../internal/user.dart';
 import '../utils/http_util.dart';
 import '../utils/log_util.dart';
 import '../utils/other_utils.dart';
@@ -410,8 +410,8 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
       initialUrlRequest: URLRequest(
         url: Uri.parse(url),
         headers: <String, String>{
-          if (CASAuthenticator().logonPredicate()) 'userToken': User.token!,
-          if (CASAuthenticator().logonPredicate()) 'X-Id-Token': User.token!,
+          if (CASAuthenticator().logonPredicate()) 'userToken': User.casToken!,
+          if (CASAuthenticator().logonPredicate()) 'X-Id-Token': User.casToken!,
           'X-Requested-With': PackageUtil.packageInfo.packageName,
         },
       ),

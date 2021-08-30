@@ -12,13 +12,22 @@ class Urls {
   static const String portalServiceHost = 'https://portal-service.$passHost';
   static const String classKitHost = 'https://classkit.jmu.edu.cn';
   static const String oa99Host = 'https://oa99.$JMU_DOMAIN';
+  static const String oap99Host = 'https://oap99.$JMU_DOMAIN';
   static const String labsHost = 'https://labs.$JMU_DOMAIN';
   static const String alexHost = 'https://openjmu.alexv525.com';
+
+  static const List<String> jmuHosts = <String>[
+    classKitHost,
+    oa99Host,
+    oap99Host,
+    labsHost,
+  ];
 
   /// Login with password.
   static const String casLogin = '$tokenHost/password/passwordLogin';
   static const String ndLogin = '$oa99Host/v2/passport/api/user/login1';
   static const String ndTicket = '$oa99Host/v2/passport/api/user/loginticket1';
+  static const String ndUserInfo = '$oap99Host/user/info'; // 用户信息
 
   static const String appSystemConfigurations =
       '$portalServiceHost/v1/config/system/getAppSystemConf';

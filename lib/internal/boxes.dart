@@ -68,6 +68,7 @@ class BoxFields {
   static const String nTicket = 'ticket';
   static const String nSession = 'session';
   static const String nBlowfish = 'blowfish';
+  static const String nUid = 'uid';
   static const String nUUID = 'uuid';
   static const String nStartDate = 'startDate';
   static const String nCourseRemark = 'courseRemark';

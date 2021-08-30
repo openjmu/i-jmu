@@ -17,13 +17,14 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   final ValueNotifier<bool> _isTakingTooLong = ValueNotifier<bool>(false);
-  late final Timer _costTimer = Timer(const Duration(seconds: 5), () {
-    _isTakingTooLong.value = true;
-  });
+  late final Timer _costTimer;
 
   @override
   void initState() {
     super.initState();
+    _costTimer = Timer(const Duration(seconds: 5), () {
+      _isTakingTooLong.value = true;
+    });
     _initialize();
   }
 
@@ -39,12 +40,19 @@ class _SplashPageState extends State<SplashPage> {
     if (!mounted) {
       return;
     }
+    if (Authenticator.hasLogin &&
+        (await Authenticator.reAuthAll()).every((bool v) => v)) {
+      navigator.pushNamedAndRemoveUntil(
+        Routes.jmuMainPage.name,
+        (Route<dynamic> r) => false,
+      );
+      return;
+    }
     navigator.pushNamedAndRemoveUntil(
-      Authenticator.hasLogin
-          ? Routes.jmuMainPage.name
-          : Routes.jmuLoginPage.name,
+      Routes.jmuLoginPage.name,
       (Route<dynamic> r) => false,
     );
+    return;
   }
 
   @override
@@ -65,15 +73,21 @@ class _SplashPageState extends State<SplashPage> {
               ),
             ),
           ),
+          const Gap.v(50),
           Expanded(
-            child: ValueListenableBuilder<bool>(
-              valueListenable: _isTakingTooLong,
-              builder: (_, bool value, __) {
-                if (value) {
-                  return const LoadingProgressIndicator();
-                }
-                return const SizedBox.shrink();
-              },
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: ValueListenableBuilder<bool>(
+                valueListenable: _isTakingTooLong,
+                builder: (_, bool value, __) => AnimatedCrossFade(
+                  crossFadeState: value
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+                  duration: kTabScrollDuration,
+                  firstChild: const LoadingProgressIndicator(),
+                  secondChild: const SizedBox.shrink(),
+                ),
+              ),
             ),
           )
         ],

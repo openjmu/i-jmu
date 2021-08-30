@@ -13,9 +13,10 @@ class NDAuthenticator extends Authenticator {
 
   @override
   bool logonPredicate() =>
-      Boxes.containerBox.get(BoxFields.nTicket) is String ||
-      Boxes.containerBox.get(BoxFields.nSession) is String ||
-      Boxes.containerBox.get(BoxFields.nBlowfish) is String;
+      Boxes.containerBox.get(BoxFields.nTicket) is String &&
+      Boxes.containerBox.get(BoxFields.nSession) is String &&
+      Boxes.containerBox.get(BoxFields.nBlowfish) is String &&
+      Boxes.containerBox.get(BoxFields.nUid) is String;
 
   @override
   Future<bool> login(String u, String p) async {
@@ -27,15 +28,21 @@ class NDAuthenticator extends Authenticator {
     );
     try {
       final Map<String, dynamic> res = await UserAPI.ndLogin(params);
-      User.blowfish = blowfish;
+      User.ndBlowfish = blowfish;
       Boxes.containerBox.put(BoxFields.nBlowfish, blowfish);
-      User.session = res['sid'] as String;
-      Boxes.containerBox.put(BoxFields.nSession, res['sid'] as String);
-      User.ticket = res['ticket'] as String;
-      Boxes.containerBox.put(BoxFields.nTicket, res['ticket'] as String);
+      User.ndSession = res['sid'].toString();
+      Boxes.containerBox.put(BoxFields.nSession, res['sid'].toString());
+      User.ndTicket = res['ticket'].toString();
+      Boxes.containerBox.put(BoxFields.nTicket, res['ticket'].toString());
+      User.ndUserId = res['uid'].toString();
+      Boxes.containerBox.put(BoxFields.nUid, res['uid'].toString());
+      await HttpUtil.updateDomainsCookies(Urls.jmuHosts);
       return true;
     } catch (e) {
-      LogUtil.e('Error when login with NDAuthenticator: $e');
+      LogUtil.e(
+        'Error when login with NDAuthenticator: $e',
+        stackTrace: e.nullableStackTrace,
+      );
       return false;
     }
   }
@@ -43,21 +50,24 @@ class NDAuthenticator extends Authenticator {
   @override
   Future<bool> reAuth([bool logoutWhenFailed = true]) async {
     if (Boxes.containerBox.get(BoxFields.nBlowfish) is! String ||
-        Boxes.containerBox.get(BoxFields.nTicket) is! String) {
+        Boxes.containerBox.get(BoxFields.nSession) is! String ||
+        Boxes.containerBox.get(BoxFields.nTicket) is! String ||
+        Boxes.containerBox.get(BoxFields.nUid) is! String) {
       return false;
     }
-    final Map<String, dynamic> params = _loginParams(
-      blowfish: Boxes.containerBox.get(BoxFields.nBlowfish) as String,
-      ticket: Boxes.containerBox.get(BoxFields.nTicket) as String,
-    );
     try {
-      final Map<String, dynamic> res = await UserAPI.ndTicket(params);
-      User.session = res['sid'] as String;
-      Boxes.containerBox.put(BoxFields.nSession, res['sid'] as String);
+      await UserAPI.ndUserInfo();
       return true;
     } catch (e) {
-      LogUtil.e('Error when fetching ticket with NDAuthenticator: $e');
-      return false;
+      final Map<String, dynamic> params = _loginParams(
+        blowfish: Boxes.containerBox.get(BoxFields.nBlowfish) as String,
+        ticket: Boxes.containerBox.get(BoxFields.nTicket) as String,
+      );
+      final Map<String, dynamic> res = await UserAPI.ndTicket(params);
+      User.ndSession = res['sid'] as String;
+      Boxes.containerBox.put(BoxFields.nSession, res['sid'] as String);
+      await HttpUtil.updateDomainsCookies(Urls.jmuHosts);
+      return true;
     }
   }
 
@@ -66,6 +76,9 @@ class NDAuthenticator extends Authenticator {
     Boxes.containerBox.delete(BoxFields.nBlowfish);
     Boxes.containerBox.delete(BoxFields.nTicket);
     Boxes.containerBox.delete(BoxFields.nSession);
+    Boxes.containerBox.delete(BoxFields.nUid);
+    Boxes.containerBox.delete(BoxFields.nCourseRemark);
+    Boxes.coursesBox.clear();
   }
 
   Map<String, dynamic> _loginParams({

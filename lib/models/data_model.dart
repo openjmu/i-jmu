@@ -14,7 +14,7 @@ import '../constants/constants.dart';
 import '../extensions/date_time_extension.dart';
 import '../extensions/object_extension.dart';
 import '../internal/boxes.dart';
-import '../internal/manager.dart';
+import '../internal/user.dart';
 import '../providers/providers.dart';
 import '../utils/log_util.dart';
 

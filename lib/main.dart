@@ -14,8 +14,8 @@ Future<void> main() async {
     ],
     eagerError: true,
   );
-  User.recoverToken();
-  Authenticator.authenticators..add(CASAuthenticator())..add(NDAuthenticator());
+  User.recoverUserInfo();
+  Authenticator.addAll(<Authenticator>[CASAuthenticator(), NDAuthenticator()]);
   runApp(const IJMUApp());
 }
 

@@ -194,7 +194,7 @@ class CourseModelAdapter extends TypeAdapter<CourseModel> {
     };
     return CourseModel(
       name: fields[0] as String,
-      time: fields[1] as String,
+      time: fields[1] as int,
       day: fields[2] as int,
       $allWeek: fields[3] as String,
       teacher: fields[4] as String?,
