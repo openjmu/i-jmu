@@ -36,7 +36,7 @@ class NDAuthenticator extends Authenticator {
       Boxes.containerBox.put(BoxFields.nTicket, res['ticket'].toString());
       User.ndUserId = res['uid'].toString();
       Boxes.containerBox.put(BoxFields.nUid, res['uid'].toString());
-      await HttpUtil.updateDomainsCookies(Urls.jmuHosts);
+      await HttpUtil.updateDomainsCookies(Urls.ssoHosts);
       return true;
     } catch (e) {
       LogUtil.e(
@@ -66,7 +66,7 @@ class NDAuthenticator extends Authenticator {
       final Map<String, dynamic> res = await UserAPI.ndTicket(params);
       User.ndSession = res['sid'] as String;
       Boxes.containerBox.put(BoxFields.nSession, res['sid'] as String);
-      await HttpUtil.updateDomainsCookies(Urls.jmuHosts);
+      await HttpUtil.updateDomainsCookies(Urls.ssoHosts);
       return true;
     }
   }

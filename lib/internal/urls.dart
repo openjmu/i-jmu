@@ -6,17 +6,22 @@ class Urls {
   const Urls._();
 
   static const String JMU_DOMAIN = 'jmu.edu.cn';
-
+  static const String wwwHost = 'https://www.$JMU_DOMAIN';
+  static const String wwwHostInsecure = 'http://www.$JMU_DOMAIN';
   static const String passHost = 'paas.$JMU_DOMAIN';
   static const String tokenHost = 'https://token.$passHost';
   static const String portalServiceHost = 'https://portal-service.$passHost';
   static const String classKitHost = 'https://classkit.jmu.edu.cn';
   static const String oa99Host = 'https://oa99.$JMU_DOMAIN';
   static const String oap99Host = 'https://oap99.$JMU_DOMAIN';
-  static const String labsHost = 'https://labs.$JMU_DOMAIN';
+  static const String labsHost = 'http://labs.$JMU_DOMAIN';
+  static const String webVPNHost = 'https://webvpn.jmu.edu.cn';
+  static const String webVPNHostInsecure = 'http://webvpn.jmu.edu.cn';
+  static const String casWebVPNHost = 'https://cas-paas-443.webvpn.jmu.edu.cn';
+
   static const String alexHost = 'https://openjmu.alexv525.com';
 
-  static const List<String> jmuHosts = <String>[
+  static const List<String> ssoHosts = <String>[
     classKitHost,
     oa99Host,
     oap99Host,
@@ -28,6 +33,9 @@ class Urls {
   static const String ndLogin = '$oa99Host/v2/passport/api/user/login1';
   static const String ndTicket = '$oa99Host/v2/passport/api/user/loginticket1';
   static const String ndUserInfo = '$oap99Host/user/info'; // 用户信息
+  static const String webVpnLogin = '$casWebVPNHost/cas/login'
+      '?service=https%3A%2F%2Fwebvpn.jmu.edu.cn'
+      '%2Fusers%2Fauth%2Fcas%2Fcallback%3Furl'; // 由 CAS 登录 WebVPN
 
   static const String appSystemConfigurations =
       '$portalServiceHost/v1/config/system/getAppSystemConf';

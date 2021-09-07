@@ -25,9 +25,10 @@ class CASAuthenticator extends Authenticator {
       User.casToken = token;
       Boxes.containerBox.put(BoxFields.nToken, token);
       HttpUtil.webViewCookieManager.setCookie(
-        url: Uri(scheme: 'https', host: Urls.JMU_DOMAIN),
+        url: Uri(host: Urls.JMU_DOMAIN),
         name: 'userToken',
         value: token,
+        sameSite: HTTPCookieSameSitePolicy.LAX,
       );
     }
     return res.isSucceed;
@@ -35,7 +36,13 @@ class CASAuthenticator extends Authenticator {
 
   /// We didn't figured out how would CAS act when the token was expired.
   @override
-  Future<bool> reAuth([bool logoutWhenFailed = true]) {
+  Future<bool> reAuth([bool logoutWhenFailed = true]) async {
+    await HttpUtil.webViewCookieManager.setCookie(
+      url: Uri(host: Urls.JMU_DOMAIN),
+      name: 'userToken',
+      value: User.casToken!,
+      sameSite: HTTPCookieSameSitePolicy.LAX,
+    );
     return Future<bool>.value(true);
   }
 

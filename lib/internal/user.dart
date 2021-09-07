@@ -52,8 +52,9 @@ class User {
     Future<void>.delayed(
       const Duration(milliseconds: 300),
       () {
-        Boxes.containerBox.clear();
         Authenticator.logoutAll();
+        Boxes.containerBox.clear();
+        HttpUtil.webViewCookieManager.deleteAllCookies();
       },
     );
   }
