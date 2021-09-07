@@ -16,6 +16,9 @@ class R {
 
   static const String ASSETS_ICONS_OBSCURE_SVG = 'assets/icons/obscure.svg';
 
+  static const String ASSETS_ICONS_ROUNDED_ARROW_SVG =
+      'assets/icons/rounded_arrow.svg';
+
   static const String ASSETS_LOGIN_BACKGROUND_VIDEO_MP4 =
       'assets/login-background-video.mp4';
 

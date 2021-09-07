@@ -633,7 +633,7 @@ Map<String, dynamic> _$BannerModelToJson(BannerModel instance) =>
 CourseModel _$CourseModelFromJson(Map<String, dynamic> json) {
   return CourseModel(
     name: json['couName'] as String? ?? '(空)',
-    time: CourseModel._dTimeFromDynamic(json['couTime']),
+    time: CourseModel._dTimeFromDynamic(json['coudeTime']),
     day: CourseModel._dDayFromDynamic(json['couDayTime']),
     $allWeek: json['allWeek'] as String,
     teacher: json['couTeaName'] as String?,

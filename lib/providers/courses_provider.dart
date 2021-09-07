@@ -5,6 +5,12 @@
 part of 'providers.dart';
 
 class CoursesProvider extends ChangeNotifier {
+  factory CoursesProvider() => _instance;
+
+  CoursesProvider._();
+
+  static late final CoursesProvider _instance = CoursesProvider._();
+
   Box<CourseModel> get _courseBox => Boxes.coursesBox;
 
   final int maxCoursesPerDay = 12;
@@ -114,20 +120,15 @@ class CoursesProvider extends ChangeNotifier {
   }
 
   void initCourses() {
-    _courses = _courseBox.values.fold<Map<int, Map<int, List<CourseModel>>>>(
-      <int, Map<int, List<CourseModel>>>{},
-      (Map<int, Map<int, List<CourseModel>>> map, CourseModel cs) {
-        if (!map.containsKey(cs.day)) {
-          map[cs.day] = <int, List<CourseModel>>{};
-        }
-        if (!map[cs.day]!.containsKey(cs.time)) {
-          map[cs.day]![cs.time] = <CourseModel>[];
-        }
-        map[cs.day]![cs.time]!.add(cs);
-        return map;
-      },
-    );
-    _hasCourses = _courses.keys.isNotEmpty;
+    _courses = resetCourses();
+    for (final CourseModel course in _courseBox.values) {
+      _courses[course.day]![course.time]!.add(course);
+    }
+    _hasCourses = _courses.values
+        .expand<List<CourseModel>>(
+            (Map<int, List<CourseModel>> map) => map.values)
+        .expand<CourseModel>((List<CourseModel> list) => list)
+        .isNotEmpty;
     _remark = Boxes.containerBox.get(BoxFields.nCourseRemark) as String?;
     if (_hasCourses) {
       firstLoaded = true;
@@ -159,14 +160,13 @@ class CoursesProvider extends ChangeNotifier {
   Future<void> updateCourses() async {
     final DateProvider dateProvider = DateProvider();
     try {
-      final List<String> responses = await Future.wait<String>(
-        <Future<String>>[
+      final List<Map<String, dynamic>> responses = await Future.wait(
+        <Future<Map<String, dynamic>>>[
           CourseAPI.getCourse(useVPN: HttpUtil.shouldUseWebVPN),
           CourseAPI.getRemark(useVPN: HttpUtil.shouldUseWebVPN),
         ],
       );
-      final Map<String, dynamic> courseData =
-          jsonDecode(responses[0]) as Map<String, dynamic>;
+      final Map<String, dynamic> courseData = responses[0];
       if ((courseData['courses'] as List<dynamic>).isEmpty &&
           courseData['othCase'] == null) {
         LogUtil.w('Courses may return invalid value, retry...');
@@ -176,9 +176,7 @@ class CoursesProvider extends ChangeNotifier {
       await Future.wait(
         <Future<void>>[
           courseResponseHandler(courseData),
-          remarkResponseHandler(
-            jsonDecode(responses[1]) as Map<String, dynamic>,
-          ),
+          remarkResponseHandler(responses[1]),
         ],
       );
       if (!_firstLoaded) {
@@ -208,23 +206,13 @@ class CoursesProvider extends ChangeNotifier {
 
   Future<void> courseResponseHandler(Map<String, dynamic> data) async {
     final List<dynamic> _courseList = data['courses'] as List<dynamic>;
-    final List<dynamic>? _customCourseList = data['othCase'] as List<dynamic>?;
     final Map<int, Map<int, List<CourseModel>>> _s = resetCourses();
-    _hasCourses =
-        _courseList.isNotEmpty || _customCourseList?.isNotEmpty == true;
+    _hasCourses = _courseList.isNotEmpty;
     for (final dynamic course in _courseList) {
-      final CourseModel _c =
-          CourseModel.fromJson(course as Map<String, dynamic>);
+      final CourseModel _c = CourseModel.fromJson(
+        course as Map<String, dynamic>,
+      );
       addCourse(_c, _s);
-    }
-    if (_customCourseList != null) {
-      for (final dynamic _course in _customCourseList) {
-        final Map<String, dynamic> course = _course as Map<String, dynamic>;
-        if ((course['content'] as String?)?.trim().isNotEmpty != true) {
-          final CourseModel _c = CourseModel.fromJson(course);
-          addCourse(_c, _s);
-        }
-      }
     }
     courses = _s;
   }
@@ -245,17 +233,18 @@ class CoursesProvider extends ChangeNotifier {
     final int courseTime = course.time.toInt();
     try {
       if (!courses.containsKey(courseDay)) {
-        courses[courseDay] = <int, List<CourseModel>>{
-          courseTime: <CourseModel>[],
-        };
+        courses[courseDay] = <int, List<CourseModel>>{};
+      }
+      if (!courses[courseDay]!.containsKey(courseTime)) {
+        courses[courseDay]![courseTime] = <CourseModel>[];
       }
       courses[courseDay]![courseTime]!.add(course);
     } catch (e) {
       LogUtil.e(
         'Failed when trying to add course at '
         'day($courseDay) time($courseTime): $e',
+        stackTrace: e.nullableStackTrace,
       );
-      LogUtil.e('$course');
     }
   }
 }

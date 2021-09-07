@@ -41,6 +41,8 @@ export 'internal/user.dart';
 export 'models/data_model.dart';
 export 'models/response_model.dart';
 
+export 'providers/providers.dart';
+
 export 'utils/device_util.dart';
 export 'utils/http_util.dart';
 export 'utils/log_util.dart';
@@ -58,6 +60,7 @@ export 'widgets/double_back_exit_wrapper.dart';
 export 'widgets/fixed_appbar.dart';
 export 'widgets/gaps.dart';
 export 'widgets/in_app_webview.dart';
+export 'widgets/lazy_indexed_stack.dart';
 export 'widgets/loading/loading_dialog.dart';
 export 'widgets/loading/loading_progress_indicator.dart';
 export 'widgets/platform_progress_indicator.dart';

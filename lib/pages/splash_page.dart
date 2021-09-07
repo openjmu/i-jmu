@@ -43,7 +43,7 @@ class _SplashPageState extends State<SplashPage> {
     if (Authenticator.hasLogin &&
         (await Authenticator.reAuthAll()).every((bool v) => v)) {
       navigator.pushNamedAndRemoveUntil(
-        Routes.jmuMainPage.name,
+        Routes.jmuHomePage.name,
         (Route<dynamic> r) => false,
       );
       return;

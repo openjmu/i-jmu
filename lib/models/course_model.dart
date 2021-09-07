@@ -25,7 +25,7 @@ class CourseModel extends DataModel {
   @JsonKey(name: 'couName', defaultValue: '(空)')
   final String name;
   @HiveField(1)
-  @JsonKey(name: 'couTime', fromJson: _dTimeFromDynamic)
+  @JsonKey(name: 'coudeTime', fromJson: _dTimeFromDynamic)
   final int time;
   @HiveField(2)
   @JsonKey(name: 'couDayTime', fromJson: _dDayFromDynamic)
@@ -86,6 +86,9 @@ class CourseModel extends DataModel {
     return _content;
   }
 
+  /// 课程是否有效
+  bool get isValid => name.isNotEmpty && name != 'null';
+
   /// 是否准备上课
   bool get inReadyTime {
     final double timeNow = _timeToDouble(TimeOfDay.now());
@@ -133,6 +136,13 @@ class CourseModel extends DataModel {
       result = inRange;
     }
     return result;
+  }
+
+  static String getCourseTime(int courseIndex) {
+    final TimeOfDay time = _coursesTime[courseIndex]![0];
+    final String hour = time.hour.toString();
+    final String minute = '${time.minute < 10 ? '0' : ''}${time.minute}';
+    return '$hour:$minute';
   }
 
   static int _dTimeFromDynamic(Object? value) {

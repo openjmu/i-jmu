@@ -94,7 +94,7 @@ class LoginNotifier extends BaseChangeNotifier {
   }
 }
 
-@FFRoute(name: 'jmu://login', routeName: '登录页')
+@FFRoute(name: 'jmu://login-page', routeName: '登录页')
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -192,15 +192,16 @@ class LoginPageState extends State<LoginPage> with RouteAware {
     }
     try {
       notifier.isLoading = true;
-      final List<bool> status = await Authenticator.loginAll(
-        _uTec.text,
-        _pTec.text,
-      );
+      final String u = _uTec.text;
+      final String p = _pTec.text;
+      final List<bool> status = await Authenticator.loginAll(u, p);
       if (status.every((bool v) => v)) {
         await videoController.setLooping(false);
         await videoController.pause();
+        Boxes.containerBox.put(BoxFields.nU, u);
+        Boxes.containerBox.put(BoxFields.nP, p);
         navigator.pushNamedAndRemoveUntil(
-          Routes.jmuMainPage.name,
+          Routes.jmuHomePage.name,
           (Route<dynamic> r) => false,
         );
       }

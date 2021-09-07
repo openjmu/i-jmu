@@ -7,6 +7,13 @@ import 'package:flutter/material.dart';
 const Color defaultLightColor = Color(0xffef5350);
 const Color defaultDarkColor = Color(0xffcb4644);
 
+BorderSide dividerBS(BuildContext c) {
+  return BorderSide(
+    width: 1,
+    color: Theme.of(c).dividerColor,
+  );
+}
+
 class RadiusConstants {
   const RadiusConstants._();
 

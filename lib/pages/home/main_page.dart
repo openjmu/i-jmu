@@ -92,7 +92,6 @@ class MainPageNotifier extends ChangeNotifier {
   }
 }
 
-@FFRoute(name: 'jmu://main-page', routeName: '首页')
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
