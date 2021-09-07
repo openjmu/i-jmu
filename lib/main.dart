@@ -15,7 +15,9 @@ Future<void> main() async {
     eagerError: true,
   );
   User.recoverUserInfo();
-  Authenticator.addAll(<Authenticator>[CASAuthenticator(), NDAuthenticator()]);
+  Authenticator.addAll(
+    <Authenticator>[CASAuthenticator(), NDAuthenticator(), VPNAuthenticator()],
+  );
   runApp(const IJMUApp());
 }
 

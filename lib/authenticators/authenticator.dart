@@ -6,6 +6,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart'
+    show HTTPCookieSameSitePolicy;
 import 'package:uuid/uuid.dart';
 
 import '../extensions/object_extension.dart';
@@ -22,6 +25,8 @@ import '../utils/log_util.dart';
 part 'cas_authenticator.dart';
 
 part 'nd_authenticator.dart';
+
+part 'vpn_authenticator.dart';
 
 abstract class Authenticator {
   static final Set<Authenticator> _authenticators = <Authenticator>{};

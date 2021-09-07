@@ -51,9 +51,7 @@ class HttpUtil {
   }
 
   static late final PersistCookieJar cookieJar;
-  static late final PersistCookieJar tokenCookieJar;
   static late final CookieManager cookieManager;
-  static late final CookieManager tokenCookieManager;
   static final web_view.CookieManager webViewCookieManager =
       web_view.CookieManager.instance();
 
@@ -81,11 +79,7 @@ class HttpUtil {
     cookieJar = PersistCookieJar(
       storage: FileStorage('${_tempDir.path}/cookie_jar'),
     );
-    tokenCookieJar = PersistCookieJar(
-      storage: FileStorage('${_tempDir.path}/token_cookie_jar'),
-    );
     cookieManager = CookieManager(cookieJar);
-    tokenCookieManager = CookieManager(tokenCookieJar);
   }
 
   static Future<T> fetch<T>(
@@ -442,7 +436,7 @@ class HttpUtil {
         ErrorInterceptorHandler handler,
       ) {
         LogUtil.e(
-          'Error when requesting: $e\n'
+          'Error when requesting ${e.requestOptions.uri}: $e\n'
           'Raw response data: ${e.response?.data}',
         );
         e.response ??= Response<Map<String, dynamic>>(
@@ -492,9 +486,7 @@ class HttpUtil {
       await Future.wait<void>(
         <Future<void>>[
           cookieJar.saveFromResponse(Uri.parse('$httpUrl/'), _cookies),
-          tokenCookieJar.saveFromResponse(Uri.parse('$httpUrl/'), _cookies),
           cookieJar.saveFromResponse(Uri.parse('$httpsUrl/'), _cookies),
-          tokenCookieJar.saveFromResponse(Uri.parse('$httpsUrl/'), _cookies),
         ],
       );
     }
