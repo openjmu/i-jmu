@@ -182,17 +182,17 @@ class BannerModelAdapter extends TypeAdapter<BannerModel> {
           typeId == other.typeId;
 }
 
-class CourseModelAdapter extends TypeAdapter<CourseModel> {
+class LabsCourseModelAdapter extends TypeAdapter<LabsCourseModel> {
   @override
   final int typeId = 5;
 
   @override
-  CourseModel read(BinaryReader reader) {
+  LabsCourseModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return CourseModel(
+    return LabsCourseModel(
       name: fields[0] as String,
       time: fields[1] as int,
       day: fields[2] as int,
@@ -232,7 +232,7 @@ class CourseModelAdapter extends TypeAdapter<CourseModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CourseModelAdapter &&
+      other is LabsCourseModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
@@ -630,20 +630,20 @@ Map<String, dynamic> _$BannerModelToJson(BannerModel instance) =>
       'sort': instance.sort,
     };
 
-CourseModel _$CourseModelFromJson(Map<String, dynamic> json) {
-  return CourseModel(
+LabsCourseModel _$LabsCourseModelFromJson(Map<String, dynamic> json) {
+  return LabsCourseModel(
     name: json['couName'] as String? ?? '(空)',
-    time: CourseModel._dTimeFromDynamic(json['coudeTime']),
-    day: CourseModel._dDayFromDynamic(json['couDayTime']),
+    time: LabsCourseModel._dTimeFromDynamic(json['coudeTime']),
+    day: LabsCourseModel._dDayFromDynamic(json['couDayTime']),
     $allWeek: json['allWeek'] as String,
     teacher: json['couTeaName'] as String?,
     location: json['couRom'] as String?,
-    classTogether: CourseModel._dClassesFromDynamic(json['comboClassName']),
-    isEleven: CourseModel._dIsElevenFromString(json['three'] as String),
+    classTogether: LabsCourseModel._dClassesFromDynamic(json['comboClassName']),
+    isEleven: LabsCourseModel._dIsElevenFromString(json['three'] as String),
   );
 }
 
-Map<String, dynamic> _$CourseModelToJson(CourseModel instance) =>
+Map<String, dynamic> _$LabsCourseModelToJson(LabsCourseModel instance) =>
     <String, dynamic>{
       'couName': instance.name,
       'couTime': instance.time,

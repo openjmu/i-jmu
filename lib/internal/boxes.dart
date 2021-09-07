@@ -14,7 +14,7 @@ class Boxes {
   static late final Box<DataModel?> dataCachesBox;
 
   /// 课程缓存
-  static late final Box<CourseModel> coursesBox;
+  static late final Box<LabsCourseModel> coursesBox;
 
   /// 什么都装
   static late final Box<Object?> containerBox;
@@ -26,7 +26,7 @@ class Boxes {
       ..registerAdapter(BannerConfigAdapter())
       ..registerAdapter(BannerModelAdapter())
       ..registerAdapter(ServiceModelAdapter())
-      ..registerAdapter(CourseModelAdapter());
+      ..registerAdapter(LabsCourseModelAdapter());
     await Future.wait(
       <Future<void>>[
         (() async => containerBox = await Hive.openBox(_BoxNames._settings))(),

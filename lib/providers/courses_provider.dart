@@ -11,7 +11,7 @@ class CoursesProvider extends ChangeNotifier {
 
   static late final CoursesProvider _instance = CoursesProvider._();
 
-  Box<CourseModel> get _courseBox => Boxes.coursesBox;
+  Box<LabsCourseModel> get _courseBox => Boxes.coursesBox;
 
   final int maxCoursesPerDay = 12;
 
@@ -20,15 +20,15 @@ class CoursesProvider extends ChangeNotifier {
   ///   2: {1: [g, h, i], 3: [j, k]...},
   ///   ...
   /// }
-  Map<int, Map<int, List<CourseModel>>> get courses => _courses;
-  late Map<int, Map<int, List<CourseModel>>> _courses;
+  Map<int, Map<int, List<LabsCourseModel>>> get courses => _courses;
+  late Map<int, Map<int, List<LabsCourseModel>>> _courses;
 
-  set courses(Map<int, Map<int, List<CourseModel>>> value) {
-    _courses = <int, Map<int, List<CourseModel>>>{...value};
-    _courses = Map<int, Map<int, List<CourseModel>>>.from(courses);
-    final Iterable<CourseModel> _courseList = _courses.values.expand(
-      (Map<int, List<CourseModel>> pair) => pair.values.expand(
-        (List<CourseModel> list) => list,
+  set courses(Map<int, Map<int, List<LabsCourseModel>>> value) {
+    _courses = <int, Map<int, List<LabsCourseModel>>>{...value};
+    _courses = Map<int, Map<int, List<LabsCourseModel>>>.from(courses);
+    final Iterable<LabsCourseModel> _courseList = _courses.values.expand(
+      (Map<int, List<LabsCourseModel>> pair) => pair.values.expand(
+        (List<LabsCourseModel> list) => list,
       ),
     );
     _courseBox
@@ -51,34 +51,34 @@ class CoursesProvider extends ChangeNotifier {
   }
 
   /// 获取今日的课程
-  List<CourseModel> get coursesToday {
+  List<LabsCourseModel> get coursesToday {
     if (_courses == null) {
-      return <CourseModel>[];
+      return <LabsCourseModel>[];
     }
-    final Iterable<CourseModel> _cs =
+    final Iterable<LabsCourseModel> _cs =
         _courses[currentTime.weekday]!.values.expand(
-              (List<CourseModel> list) => list,
+              (List<LabsCourseModel> list) => list,
             );
     return _cs
-        .where((CourseModel c) => c.inCurrentDay() && c.inCurrentWeek())
+        .where((LabsCourseModel c) => c.inCurrentDay() && c.inCurrentWeek())
         .toList();
   }
 
   /// 获取明日的课程
-  List<CourseModel> get coursesTomorrow {
+  List<LabsCourseModel> get coursesTomorrow {
     if (_courses == null) {
-      return <CourseModel>[];
+      return <LabsCourseModel>[];
     }
     final DateTime tomorrow = currentTime.add(const Duration(days: 1));
     int? currentWeek;
     if (tomorrow.weekday == 1) {
       currentWeek = DateProvider().currentWeek + 1;
     }
-    final Iterable<CourseModel> _cs = _courses[tomorrow.weekday]!.values.expand(
-          (List<CourseModel> list) => list,
+    final Iterable<LabsCourseModel> _cs = _courses[tomorrow.weekday]!.values.expand(
+          (List<LabsCourseModel> list) => list,
         );
     return _cs
-        .where((CourseModel c) =>
+        .where((LabsCourseModel c) =>
             c.inCurrentDay(tomorrow.weekday) && c.inCurrentWeek(currentWeek))
         .toList();
   }
@@ -121,13 +121,13 @@ class CoursesProvider extends ChangeNotifier {
 
   void initCourses() {
     _courses = resetCourses();
-    for (final CourseModel course in _courseBox.values) {
+    for (final LabsCourseModel course in _courseBox.values) {
       _courses[course.day]![course.time]!.add(course);
     }
     _hasCourses = _courses.values
-        .expand<List<CourseModel>>(
-            (Map<int, List<CourseModel>> map) => map.values)
-        .expand<CourseModel>((List<CourseModel> list) => list)
+        .expand<List<LabsCourseModel>>(
+            (Map<int, List<LabsCourseModel>> map) => map.values)
+        .expand<LabsCourseModel>((List<LabsCourseModel> list) => list)
         .isNotEmpty;
     _remark = Boxes.containerBox.get(BoxFields.nCourseRemark) as String?;
     if (_hasCourses) {
@@ -146,12 +146,12 @@ class CoursesProvider extends ChangeNotifier {
     _showError = false;
   }
 
-  Map<int, Map<int, List<CourseModel>>> resetCourses() {
-    final Map<int, Map<int, List<CourseModel>>> courses =
-        <int, Map<int, List<CourseModel>>>{
+  Map<int, Map<int, List<LabsCourseModel>>> resetCourses() {
+    final Map<int, Map<int, List<LabsCourseModel>>> courses =
+        <int, Map<int, List<LabsCourseModel>>>{
       for (int i = 1; i < 7 + 1; i++)
-        i: <int, List<CourseModel>>{
-          for (int i = 1; i < maxCoursesPerDay + 1; i++) i: <CourseModel>[],
+        i: <int, List<LabsCourseModel>>{
+          for (int i = 1; i < maxCoursesPerDay + 1; i++) i: <LabsCourseModel>[],
         },
     };
     return courses;
@@ -206,10 +206,10 @@ class CoursesProvider extends ChangeNotifier {
 
   Future<void> courseResponseHandler(Map<String, dynamic> data) async {
     final List<dynamic> _courseList = data['courses'] as List<dynamic>;
-    final Map<int, Map<int, List<CourseModel>>> _s = resetCourses();
+    final Map<int, Map<int, List<LabsCourseModel>>> _s = resetCourses();
     _hasCourses = _courseList.isNotEmpty;
     for (final dynamic course in _courseList) {
-      final CourseModel _c = CourseModel.fromJson(
+      final LabsCourseModel _c = LabsCourseModel.fromJson(
         course as Map<String, dynamic>,
       );
       addCourse(_c, _s);
@@ -226,17 +226,17 @@ class CoursesProvider extends ChangeNotifier {
   }
 
   void addCourse(
-    CourseModel course,
-    Map<int, Map<int, List<CourseModel>>> courses,
+    LabsCourseModel course,
+    Map<int, Map<int, List<LabsCourseModel>>> courses,
   ) {
     final int courseDay = course.day;
     final int courseTime = course.time.toInt();
     try {
       if (!courses.containsKey(courseDay)) {
-        courses[courseDay] = <int, List<CourseModel>>{};
+        courses[courseDay] = <int, List<LabsCourseModel>>{};
       }
       if (!courses[courseDay]!.containsKey(courseTime)) {
-        courses[courseDay]![courseTime] = <CourseModel>[];
+        courses[courseDay]![courseTime] = <LabsCourseModel>[];
       }
       courses[courseDay]![courseTime]!.add(course);
     } catch (e) {

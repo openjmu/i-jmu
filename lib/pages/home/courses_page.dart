@@ -68,7 +68,7 @@ class _CoursesPageState extends State<CoursesPage>
 
   DateTime get now => currentTime;
 
-  Map<int, Map<int, List<CourseModel>>> get courses => coursesProvider.courses;
+  Map<int, Map<int, List<LabsCourseModel>>> get courses => coursesProvider.courses;
 
   DateProvider get dateProvider => DateProvider();
 
@@ -148,9 +148,9 @@ class _CoursesPageState extends State<CoursesPage>
     int _maxWeekday = 7;
     bool _foundLastCourse = false;
     while (!_foundLastCourse) {
-      final Iterable<CourseModel>? list = courses[_maxWeekday - 1]
+      final Iterable<LabsCourseModel>? list = courses[_maxWeekday - 1]
           ?.values
-          .expand<CourseModel>((List<CourseModel> list) => list);
+          .expand<LabsCourseModel>((List<LabsCourseModel> list) => list);
       if (list != null && list.isNotEmpty) {
         _foundLastCourse = true;
       }
@@ -407,7 +407,7 @@ class _CoursesPageState extends State<CoursesPage>
                     ),
                   ),
                   Text(
-                    CourseModel.getCourseTime(i + 1),
+                    LabsCourseModel.getCourseTime(i + 1),
                     style: context.textTheme.caption?.copyWith(fontSize: 12),
                   ),
                 ],
@@ -428,14 +428,14 @@ class _CoursesPageState extends State<CoursesPage>
     /// Judge max courses per day.
     /// 判断每天最多课时
     for (final int day in courses.keys) {
-      final List<CourseModel> list9 =
-          (courses[day]![9] as List<CourseModel>).cast<CourseModel>();
-      final List<CourseModel> list11 =
-          (courses[day]![11] as List<CourseModel>).cast<CourseModel>();
+      final List<LabsCourseModel> list9 =
+          (courses[day]![9] as List<LabsCourseModel>).cast<LabsCourseModel>();
+      final List<LabsCourseModel> list11 =
+          (courses[day]![11] as List<LabsCourseModel>).cast<LabsCourseModel>();
       if (list9.isAllValid && _maxCoursesPerDay < 10) {
         _maxCoursesPerDay = 10;
       } else if (list9.isAllValid &&
-          list9.where((CourseModel course) => course.isEleven).isAllValid &&
+          list9.where((LabsCourseModel course) => course.isEleven).isAllValid &&
           _maxCoursesPerDay < 11) {
         hasEleven = true;
         _maxCoursesPerDay = 11;
@@ -458,7 +458,7 @@ class _CoursesPageState extends State<CoursesPage>
                       CourseWidget(
                         courseList: courses[day]!
                             .cast<int, List<dynamic>>()[count]!
-                            .cast<CourseModel>(),
+                            .cast<LabsCourseModel>(),
                         hasEleven: hasEleven && count == 9,
                         currentWeek: currentWeek,
                         coordinate: <int>[day, count],
@@ -559,7 +559,7 @@ class CourseWidget extends StatelessWidget {
   })  : assert(coordinate.length == 2, 'Invalid course coordinate'),
         super(key: key);
 
-  final List<CourseModel>? courseList;
+  final List<LabsCourseModel>? courseList;
   final List<int> coordinate;
   final bool hasEleven;
   final int currentWeek;
@@ -585,7 +585,7 @@ class CourseWidget extends StatelessWidget {
     );
   }
 
-  Widget courseCustomIndicator(CourseModel course) {
+  Widget courseCustomIndicator(LabsCourseModel course) {
     return Positioned(
       bottom: 1.5,
       left: 1.5,
@@ -643,7 +643,7 @@ class CourseWidget extends StatelessWidget {
     );
   }
 
-  Widget courseContent(BuildContext context, CourseModel? course) {
+  Widget courseContent(BuildContext context, LabsCourseModel? course) {
     Widget child;
     if (course != null && course.isValid) {
       child = Text.rich(
@@ -682,10 +682,10 @@ class CourseWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isEleven = false;
-    CourseModel? course;
+    LabsCourseModel? course;
     if (courseList.isAllValid) {
       course = courseList!.firstWhereOrNull(
-        (CourseModel c) => c.inCurrentWeek(currentWeek),
+        (LabsCourseModel c) => c.inCurrentWeek(currentWeek),
       );
     }
     if (course == null && courseList.isAllValid) {
@@ -734,7 +734,7 @@ class CourseWidget extends StatelessWidget {
                   ),
                 ),
                 if (courseList!.isAllValid) courseCustomIndicator(course!),
-                if (courseList!.where((CourseModel c) => c.isValid).length > 1)
+                if (courseList!.where((LabsCourseModel c) => c.isValid).length > 1)
                   courseCountIndicator,
               ],
             ),
@@ -754,7 +754,7 @@ class _CourseListDialog extends StatefulWidget {
     required this.coordinate,
   }) : super(key: key);
 
-  final List<CourseModel> courseList;
+  final List<LabsCourseModel> courseList;
   final int currentWeek;
   final List<int> coordinate;
 
@@ -806,7 +806,7 @@ class _CourseColorIndicator extends StatelessWidget {
     required this.currentWeek,
   }) : super(key: key);
 
-  final CourseModel course;
+  final LabsCourseModel course;
   final int currentWeek;
 
   bool get isOutOfTerm => currentWeek < 1 || currentWeek > 20;
@@ -875,7 +875,7 @@ class _CourseDetailDialog extends StatelessWidget {
     this.isDialog = true,
   }) : super(key: key);
 
-  final CourseModel course;
+  final LabsCourseModel course;
   final int currentWeek;
   final bool isDialog;
 
@@ -943,7 +943,7 @@ class _CourseDetailDialog extends StatelessWidget {
   }
 }
 
-extension ValidCoursesExtension on Iterable<CourseModel>? {
+extension ValidCoursesExtension on Iterable<LabsCourseModel>? {
   bool get isAllValid =>
-      this?.where((CourseModel c) => c.isValid).isNotEmpty ?? false;
+      this?.where((LabsCourseModel c) => c.isValid).isNotEmpty ?? false;
 }

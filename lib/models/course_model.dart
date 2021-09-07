@@ -6,8 +6,8 @@ part of 'data_model.dart';
 
 @HiveType(typeId: BoxTypeIds.courseModel)
 @JsonSerializable()
-class CourseModel extends DataModel {
-  const CourseModel({
+class LabsCourseModel extends DataModel {
+  const LabsCourseModel({
     required this.name,
     required this.time,
     required this.day,
@@ -18,8 +18,8 @@ class CourseModel extends DataModel {
     required this.isEleven,
   });
 
-  factory CourseModel.fromJson(Map<String, dynamic> json) =>
-      _$CourseModelFromJson(json);
+  factory LabsCourseModel.fromJson(Map<String, dynamic> json) =>
+      _$LabsCourseModelFromJson(json);
 
   @HiveField(0)
   @JsonKey(name: 'couName', defaultValue: '(空)')
@@ -245,7 +245,7 @@ class CourseModel extends DataModel {
       ];
 
   @override
-  Map<String, dynamic> toJson() => _$CourseModelToJson(this);
+  Map<String, dynamic> toJson() => _$LabsCourseModelToJson(this);
 }
 
 enum ClassOddEven { all, odd, even }
