@@ -19,6 +19,7 @@ import '../constants/styles.dart';
 import '../extensions/build_context_extension.dart';
 import '../extensions/state_extension.dart';
 import '../internal/screens.dart';
+import '../internal/urls.dart';
 import '../internal/user.dart';
 import '../utils/http_util.dart';
 import '../utils/log_util.dart';
@@ -91,6 +92,8 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
   String get urlDomain => Uri.parse(url).host;
   late final ValueNotifier<String?> title =
       ValueNotifier<String?>(widget.title?.trim() ?? '网页链接');
+
+  bool _handlingCourses = false;
 
   @override
   bool get wantKeepAlive => widget.keepAlive;
@@ -295,6 +298,40 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
     );
   }
 
+  Future<void> _handleCourseInject(InAppWebViewController controller) async {
+    if (_handlingCourses) {
+      return;
+    }
+    _handlingCourses = true;
+    final int currentSemesterId = await controller.evaluateJavascript(
+      source: 'currentSemester["id"]',
+    ) as int;
+    final int studentId = await controller.evaluateJavascript(
+      source: 'studentId[0]',
+    ) as int;
+    LogUtil.d('$currentSemesterId $studentId');
+    final CallAsyncJavaScriptResult? r = await controller.callAsyncJavaScript(
+      functionBody: '''
+var p = new Promise(function (resolve, reject) {
+  \$.get("course-table/semester/$currentSemesterId/print-data/$studentId")
+  .done(function(data) {
+    resolve(data);
+  })
+  .fail(function() {
+    reject(null);
+  })
+});
+await p;
+return p;
+''',
+    );
+    if (r?.value is Map) {
+      showToast('课表拦截成功');
+      LogUtil.d(r);
+    }
+    _handlingCourses = false;
+  }
+
   FixedAppBar get appBar {
     return FixedAppBar(
       title: ValueListenableBuilder<String?>(
@@ -483,6 +520,9 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
           if (ogTitle != null) {
             title.value = ogTitle;
           }
+        }
+        if (url.toString() == Urls.coursesPage) {
+          _handleCourseInject(controller);
         }
       },
       onConsoleMessage: (_, ConsoleMessage consoleMessage) {

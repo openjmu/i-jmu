@@ -11,13 +11,15 @@ class Urls {
   static const String passHost = 'paas.$JMU_DOMAIN';
   static const String tokenHost = 'https://token.$passHost';
   static const String portalServiceHost = 'https://portal-service.$passHost';
-  static const String classKitHost = 'https://classkit.jmu.edu.cn';
+  static const String portalUiHost = 'https://portal-ui.$passHost';
+  static const String classKitHost = 'https://classkit.$JMU_DOMAIN';
   static const String oa99Host = 'https://oa99.$JMU_DOMAIN';
   static const String oap99Host = 'https://oap99.$JMU_DOMAIN';
   static const String labsHost = 'http://labs.$JMU_DOMAIN';
-  static const String webVPNHost = 'https://webvpn.jmu.edu.cn';
-  static const String webVPNHostInsecure = 'http://webvpn.jmu.edu.cn';
-  static const String casWebVPNHost = 'https://cas-paas-443.webvpn.jmu.edu.cn';
+  static const String webVPNHost = 'https://webvpn.$JMU_DOMAIN';
+  static const String webVPNHostInsecure = 'http://webvpn.$JMU_DOMAIN';
+  static const String casWebVPNHost = 'https://cas-paas-443.webvpn.$JMU_DOMAIN';
+  static const String jwxtHost = 'http://jwxt.$JMU_DOMAIN';
 
   static const String alexHost = 'https://openjmu.alexv525.com';
 
@@ -54,6 +56,7 @@ class Urls {
       '$labsHost/CourseSchedule/StudentCourseSchedule';
   static const String courseRemark =
       '$labsHost/CourseSchedule/StudentClassRemark';
+  static const String coursesPage = '$jwxtHost/student/for-std/course-table';
 
   /// 将域名替换为 WebVPN 映射的二级域名
   ///
