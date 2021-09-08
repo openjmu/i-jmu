@@ -36,6 +36,7 @@ export 'internal/api.dart';
 export 'internal/boxes.dart';
 export 'internal/instances.dart';
 export 'internal/screens.dart';
+export 'internal/urls.dart';
 export 'internal/user.dart';
 
 export 'models/data_model.dart';
